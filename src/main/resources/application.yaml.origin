@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: <your username>
+    password: <your password>
+    url: <your database url>
+  profiles:
+    active: no-security
+server:
+  servlet:
+    context-path: /buy-read-review
