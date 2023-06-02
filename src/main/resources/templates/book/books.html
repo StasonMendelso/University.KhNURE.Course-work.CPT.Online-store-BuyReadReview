@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="d-flex flex-row flex-wrap">
+            <div th:each="book : ${bookList}" class="card" style="width: 18rem;">
+                <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
+                <div class="card-body mt-auto">
+                    <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
+                    <p class="card-text" th:text="${book.getPrice()}"></p>
+                    <a href="#" class="btn btn-primary">Add to cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>

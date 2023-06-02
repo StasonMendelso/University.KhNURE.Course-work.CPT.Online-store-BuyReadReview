@@ -9,3 +9,7 @@ spring:
 server:
   servlet:
     context-path: /buy-read-review
+
+app:
+  file:
+      bucket: <your bucket name>

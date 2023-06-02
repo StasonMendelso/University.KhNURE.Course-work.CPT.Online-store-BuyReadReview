@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="book">
+            <div class="book-image-container">
+                <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" alt="Book photo">
+            </div>
+            <div>
+                ISBN: <span th:text="${book.getIsbn()}">isbn</span>
+            </div>
+            <div>
+                Title: <span th:text="${book.getTitle()}">title</span>
+            </div>
+            <div>
+                Papers: <span th:text="${book.getPaperQuantity()}">paperQuantity</span>
+            </div>
+            <div>
+                Description: <span th:text="${book.getDescription()}">description</span>
+            </div>
+            <div>
+                Price: <span th:text="${book.getPrice()}">price</span>
+            </div>
+            <div>
+                Quantity: <span th:text="${book.getQuantity()}">quantity</span>
+            </div>
+            <div>
+                Article: <span th:text="${book.getArticle()}">article</span>
+            </div>
+            <div>
+                Publisher: <span th:text="${book.getPublisher().getName()}">publisher name</span>
+            </div>
+            <div>
+                Author(-s):
+                <span th:each="author : ${book.getAuthors()}" th:object="${author}" th:text="${author.getFirstName() + ' ' + author.getLastName() }">author</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
