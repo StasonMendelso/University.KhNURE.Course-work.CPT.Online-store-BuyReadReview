@@ -89,7 +89,7 @@ CREATE TABLE book
         CONSTRAINT  book_title CHECK (title != ""),
     `description`           MEDIUMTEXT NOT NULL
         CONSTRAINT  book_description CHECK (`description` != ""),
-    isbn                  VARCHAR(16) NOT NULL
+    isbn                  VARCHAR(18) NOT NULL
         CONSTRAINT  book_isbn CHECK (isbn != ""),
     hidden                boolean NOT NULL DEFAULT 0,
     price                 DECIMAL(30,8) NOT NULL DEFAULT 0
