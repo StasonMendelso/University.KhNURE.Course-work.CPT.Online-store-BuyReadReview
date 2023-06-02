@@ -15,6 +15,7 @@ import org.teamone.onlinestorebuyreadreview.database.mapper.publisher.ReadPublis
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,7 +67,7 @@ public class ReadBookExtractor implements ResultSetExtractor<Book> {
 
         book.setAuthors(authors.stream().toList());
         book.setGenres(genres.stream().toList());
-        book.setFiles(files.stream().toList());
+        book.setFiles(files.stream().sorted(Comparator.comparing(File::getName)).toList());
         return book;
 
     }

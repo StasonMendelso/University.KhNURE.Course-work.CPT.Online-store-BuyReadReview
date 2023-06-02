@@ -10,7 +10,7 @@
         <nav th:replace="~{fragment::navbar}"></nav>
     </div>
     <div class="content container">
-        <div class="book">
+        <div class="book" th:if="${!book.getHidden()}">
             <div class="book-image-container">
                 <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" alt="Book photo">
             </div>
@@ -40,9 +40,14 @@
             </div>
             <div>
                 Author(-s):
-                <span th:each="author : ${book.getAuthors()}" th:object="${author}" th:text="${author.getFirstName() + ' ' + author.getLastName() }">author</span>
+                <span th:each="author : ${book.getAuthors()}" th:object="${author}" th:text="${author.getFirstName() + ' ' + author.getLastName() + ', '}">author</span>
+            </div>
+            <div>
+                Genre(-s):
+                <span th:each="genre : ${book.getGenres()}" th:object="${genre}" th:text="${genre.getName() + ', '}">genre</span>
             </div>
         </div>
+        <div th:if="${book.getHidden()}">Книги не знайдено</div>
     </div>
     <div class="footer">
         <footer th:replace="~{fragment::footer}"></footer>

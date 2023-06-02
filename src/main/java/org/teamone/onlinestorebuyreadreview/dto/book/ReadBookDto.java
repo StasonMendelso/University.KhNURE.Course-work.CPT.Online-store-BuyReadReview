@@ -26,6 +26,7 @@ public class ReadBookDto {
     private BigDecimal price;
     private Integer quantity;
     private String article;
+    private Boolean hidden;
     private ReadPublisherDto publisher;
     private List<ReadAuthorDto> authors;
     private List<ReadGenreDto> genres;

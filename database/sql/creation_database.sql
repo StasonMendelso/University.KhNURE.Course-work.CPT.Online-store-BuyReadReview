@@ -631,7 +631,7 @@ CREATE UNIQUE INDEX unique_relative_path ON `file`
 CREATE TABLE genre
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
-    name                  VARCHAR(200) NOT NULL,
+    name                  VARCHAR(200) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
