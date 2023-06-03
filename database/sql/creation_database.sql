@@ -6,7 +6,6 @@ DROP TABLE cash_payment;
 DROP TABLE edit_review_permission;
 DROP TABLE card_returned_funds_payment;
 DROP TABLE delivery_item;
-DROP TABLE book_review_request_for_publication_cancel;
 DROP TABLE deliveryman_contact;
 DROP TABLE delivery;
 DROP TABLE delivery_status;
@@ -302,16 +301,6 @@ CREATE INDEX XIE3request_for_publication_admin ON book_review_request_for_public
     (
      admin_id
         );
-
-
-CREATE TABLE book_review_request_for_publication_cancel
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    reason                VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_request_for_publication_cancel_reason CHECK (reason != ""),
-    book_review_request_for_publication_id  BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE book_review_request_for_publication_characteristic
@@ -917,11 +906,6 @@ ALTER TABLE book_review_request_for_publication
 
 ALTER TABLE book_review_request_for_publication
     ADD FOREIGN KEY R_208 (check_request_id) REFERENCES book_review_request_for_checking(id);
-
-
-ALTER TABLE book_review_request_for_publication_cancel
-    ADD FOREIGN KEY R_359 (book_review_request_for_publication_id) REFERENCES book_review_request_for_publication(id)
-        ON DELETE CASCADE;
 
 
 ALTER TABLE book_review_request_for_publication_characteristic
