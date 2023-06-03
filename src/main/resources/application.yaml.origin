@@ -13,3 +13,4 @@ server:
 app:
   file:
       bucket: <your bucket name>
+          book-directory-bucket-name: book-directory

@@ -2,6 +2,7 @@ package org.teamone.onlinestorebuyreadreview.config.properties;
 
 import lombok.Data;
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.nio.file.Files;
@@ -14,8 +15,11 @@ import java.nio.file.Path;
 @Data
 public class FileProperties{
     private final Path bucket;
+    private final String bookDirectoryBucketName;
 
-    public FileProperties(String bucket){
+    public FileProperties(String bucket, @Value("${app.file.book-directory-bucket-name}") String bookDirectoryBucketName){
+        this.bookDirectoryBucketName = bookDirectoryBucketName;
+
         if(bucket.startsWith("rel:")){
             bucket = bucket.substring(4);
         }

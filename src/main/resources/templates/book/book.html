@@ -10,9 +10,28 @@
         <nav th:replace="~{fragment::navbar}"></nav>
     </div>
     <div class="content container">
-        <div class="book">
+        <div class="book" th:if="${!book.getHidden()}">
+            <div class="h3" th:text="${book.getTitle()}"></div>
             <div class="book-image-container">
-                <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" alt="Book photo">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true" th:if="${book.getFiles().size()>1}">
+                    <div class="carousel-indicators">
+                        <button th:each="file, iStats : ${book.getFiles()}" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${iStats.index}" th:classappend="${iStats.first ? 'active':''}"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item" th:each="file, iStats : ${book.getFiles()}" th:classappend="${iStats.first ? 'active':''}">
+                            <img th:src="@{/file/book/{file_id}(file_id=${file.getId()})}" alt="Book photo">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <img th:if="${book.getFiles().size()<=1}" th:src="@{/file/book/{file_id}(file_id=${(book.getFiles).stream().findFirst().get().getId()})}" alt="Book photo">
             </div>
             <div>
                 ISBN: <span th:text="${book.getIsbn()}">isbn</span>
@@ -40,9 +59,14 @@
             </div>
             <div>
                 Author(-s):
-                <span th:each="author : ${book.getAuthors()}" th:object="${author}" th:text="${author.getFirstName() + ' ' + author.getLastName() }">author</span>
+                <span th:each="author, iStats : ${book.getAuthors()}" th:object="${author}" th:text="${iStats.last ? author.getFirstName() + ' ' + author.getLastName() :author.getFirstName() + ' ' + author.getLastName() + ', '}">author</span>
+            </div>
+            <div>
+                Genre(-s):
+                <span th:each="genre, iStats: ${book.getGenres()}" th:object="${genre}" th:text="${iStats.last ? genre.getName() : genre.getName() + ', '}">genre</span>
             </div>
         </div>
+        <div th:if="${book.getHidden()}">Книги не знайдено</div>
     </div>
     <div class="footer">
         <footer th:replace="~{fragment::footer}"></footer>

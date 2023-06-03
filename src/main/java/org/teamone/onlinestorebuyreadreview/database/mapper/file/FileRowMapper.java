@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * @author Stanislav Hlova
  */
 @Component
-public class ReadFileRowMapper implements RowMapper<File> {
+public class FileRowMapper implements RowMapper<File> {
     @Override
     public File mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return File.builder()

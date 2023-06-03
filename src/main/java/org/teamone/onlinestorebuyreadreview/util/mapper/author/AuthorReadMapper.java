@@ -19,4 +19,14 @@ public class AuthorReadMapper implements Mapper<Author, ReadAuthorDto> {
                 .pseudonym(author.getPseudonym())
                 .build();
     }
+
+    @Override
+    public Author unmap(ReadAuthorDto readAuthorDto) {
+        return Author.builder()
+                .id(readAuthorDto.getId())
+                .pseudonym(readAuthorDto.getPseudonym())
+                .firstName(readAuthorDto.getFirstName())
+                .lastName(readAuthorDto.getLastName())
+                .build();
+    }
 }

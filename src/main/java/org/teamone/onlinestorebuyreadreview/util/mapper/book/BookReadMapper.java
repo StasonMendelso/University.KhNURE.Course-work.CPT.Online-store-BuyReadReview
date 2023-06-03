@@ -32,6 +32,7 @@ public class BookReadMapper implements Mapper<Book, ReadBookDto> {
                 .paperQuantity(book.getPaperQuantity())
                 .quantity(book.getQuantity())
                 .description(book.getDescription())
+                .hidden(book.getHidden())
                 .publisher(publisherReadMapper.map(book.getPublisher()))
                 .authors(book.getAuthors().stream().map(authorReadMapper::map).toList())
                 .genres(book.getGenres().stream().map(genreReadMapper::map).toList())
