@@ -1,4 +1,3 @@
-DROP TABLE client_note_for_wishes;
 DROP TABLE book_review_edited;
 DROP TABLE receiver_contact;
 DROP TABLE card_payment;
@@ -497,15 +496,6 @@ CREATE TABLE `client`
 );
 
 
-CREATE TABLE client_note_for_wishes
-(
-    wish_description      MEDIUMTEXT NOT NULL,
-    manager_id            BIGINT NOT NULL,
-    id_request            BIGINT NOT NULL,
-    PRIMARY KEY (id_request)
-);
-
-
 CREATE TABLE courier_delivery
 (
     address               VARCHAR(100) NOT NULL,
@@ -521,6 +511,7 @@ CREATE TABLE delivery
     courier_id            BIGINT NOT NULL,
     id                    BIGINT NOT NULL ,
     delivery_status_id    BIGINT NOT NULL,
+    date_of_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -563,6 +554,8 @@ CREATE TABLE delivery_request
     order_id              BIGINT NOT NULL,
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     delivery_request_status_id  BIGINT NOT NULL,
+    client_wish_description   MEDIUMTEXT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
