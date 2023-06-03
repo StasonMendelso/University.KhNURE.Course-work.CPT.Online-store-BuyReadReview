@@ -8,7 +8,8 @@
 
 }
 .content{
-
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .footer{
     background: #F8F9FA;
@@ -21,4 +22,18 @@
 .logo-container img{
     width: 50px;
     height: 50px;
+}
+.author-scroll-container{
+    height: 150px;
+}
+.genre-scroll-container{
+    height: 150px;
+}
+.error{
+    color: red;
+}
+.book-image-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

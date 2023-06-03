@@ -15,4 +15,15 @@ public class Author {
     private String firstName;
     private String lastName;
     private String pseudonym;
+
+    public String getFullName() {
+        return String.format("%s %s", lastName, firstName);
+    }
+    public static class AuthorBuilder {
+        public AuthorBuilder fullName(String fullName) {
+            this.firstName = fullName.split(" ")[0];
+            this.lastName = fullName.split(" ")[1];
+            return this;
+        }
+    }
 }

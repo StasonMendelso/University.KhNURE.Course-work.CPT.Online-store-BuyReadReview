@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * @author Stanislav Hlova
  */
 @Component
-public class ReadGenreRowMapper implements RowMapper<Genre> {
+public class GenreRowMapper implements RowMapper<Genre> {
     @Override
     public Genre mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return Genre.builder()

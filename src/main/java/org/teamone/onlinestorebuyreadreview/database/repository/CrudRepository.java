@@ -1,5 +1,6 @@
 package org.teamone.onlinestorebuyreadreview.database.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,4 +11,5 @@ public interface CrudRepository<I,V> {
     Optional<V> read(I id);
     Optional<V> update(I id, V entity);
     void delete(I id);
+    List<V> readAll();
 }

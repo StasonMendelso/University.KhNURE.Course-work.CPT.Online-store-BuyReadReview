@@ -2,12 +2,19 @@ package org.teamone.onlinestorebuyreadreview.database.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
-import org.teamone.onlinestorebuyreadreview.database.mapper.book.ReadBookExtractor;
+import org.teamone.onlinestorebuyreadreview.database.mapper.book.BookExtractor;
 import org.teamone.onlinestorebuyreadreview.database.mapper.book.ReadBooksExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.BatchPreparedStatementSetterWithBatchSize;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.BookInsertStatementSetter;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,12 +26,38 @@ import java.util.Optional;
 public class BookRepository implements CrudRepository<Long, Book> {
     private final JdbcTemplate jdbcTemplate;
 
-    private final ReadBookExtractor readBookExtractor;
+    private final BookExtractor bookExtractor;
     private final ReadBooksExtractor readBooksExtractor;
 
     @Override
     public Optional<Book> create(Book entity) {
-        return Optional.empty();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO book(paper_quantity, title, description, isbn, hidden, price, quantity, article, publisher_id) VALUE (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            new BookInsertStatementSetter(entity).setValues(preparedStatement);
+            return preparedStatement;
+        }, keyHolder);
+        Long generatedKey = keyHolder.getKey().longValue();
+        jdbcTemplate.batchUpdate("INSERT INTO book_genre(book_id, genre_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(entity.getGenres().size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++,generatedKey);
+                preparedStatement.setLong(index,entity.getGenres().get(i).getId());
+            }
+
+        });
+        jdbcTemplate.batchUpdate("INSERT INTO author_book(book_id, author_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(entity.getAuthors().size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++,generatedKey);
+                preparedStatement.setLong(index,entity.getAuthors().get(i).getId());
+            }
+        });
+
+
+        return read(generatedKey);
     }
 
     public Optional<Book> read(Long id) {
@@ -44,7 +77,7 @@ public class BookRepository implements CrudRepository<Long, Book> {
                                                                  "LEFT JOIN file ON book_file.file_id = file.id " +
                                                                  "WHERE book.id = ?"),
                 preparedStatement -> preparedStatement.setLong(1, id),
-                readBookExtractor));
+                bookExtractor));
     }
 
     @Override
@@ -57,6 +90,7 @@ public class BookRepository implements CrudRepository<Long, Book> {
 
     }
 
+    @Override
     public List<Book> readAll() {
         return jdbcTemplate.query(
                 new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn, paper_quantity, title, description, price,hidden, quantity, article, " +

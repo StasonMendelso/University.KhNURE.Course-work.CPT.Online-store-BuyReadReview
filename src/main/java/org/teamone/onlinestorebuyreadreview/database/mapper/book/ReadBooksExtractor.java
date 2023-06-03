@@ -17,12 +17,12 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ReadBooksExtractor implements ResultSetExtractor<List<Book>> {
-    private final ReadBookExtractor readBookExtractor;
+    private final BookExtractor bookExtractor;
     @Override
     public List<Book> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<Book> books = new ArrayList<>();
         do{
-            books.add(readBookExtractor.extractData(resultSet));
+            books.add(bookExtractor.extractData(resultSet));
         }while (!resultSet.isAfterLast());
         return books;
     }

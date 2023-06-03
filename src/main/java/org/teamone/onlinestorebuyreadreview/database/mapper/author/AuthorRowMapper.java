@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * @author Stanislav Hlova
  */
 @Component
-public class ReadAuthorRowMapper implements RowMapper<Author> {
+public class AuthorRowMapper implements RowMapper<Author> {
     @Override
     public Author mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return Author.builder()
