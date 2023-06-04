@@ -2,6 +2,9 @@ package org.teamone.onlinestorebuyreadreview.http.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +27,7 @@ import org.teamone.onlinestorebuyreadreview.service.BookService;
 import org.teamone.onlinestorebuyreadreview.service.GenreService;
 import org.teamone.onlinestorebuyreadreview.service.PublisherService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +45,10 @@ public class BookController {
 
     @GetMapping
     public String viewBooks(Model model) {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        Collection<GrantedAuthority> authorityCollection = (Collection<GrantedAuthority>) authentication.getAuthorities();
+        authorityCollection.stream().forEach(grantedAuthority -> System.out.println(grantedAuthority.getAuthority()));
         model.addAttribute("bookList", bookService.getAllBooks());
         return "book/books";
     }
