@@ -10,16 +10,12 @@
         <nav th:replace="~{fragment::navbar}"></nav>
     </div>
     <div class="content container">
-        <div class="d-flex flex-row flex-wrap justify-content-center">
-            <div th:each="book : ${bookList}" class="card" style="width: 18rem;" th:if="${!book.getHidden()}">
-                <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
-                <div class="card-body mt-auto">
-                    <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
-                    <p class="card-text" th:text="${book.getPrice()}"></p>
-                    <a href="#" class="btn btn-primary">Add to cart</a>
-                </div>
+        <div class="d-flex flex-row justify-content-center">
+            <div class="d-flex flex-row flex-wrap justify-content-center">
+                <div th:replace="~{fragment::bookRow(${bookList})}"></div>
             </div>
         </div>
+
     </div>
     <div class="footer">
         <footer th:replace="~{fragment::footer}"></footer>

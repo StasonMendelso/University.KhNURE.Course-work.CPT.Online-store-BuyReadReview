@@ -10,7 +10,10 @@
         <nav th:replace="~{fragment::navbar}"></nav>
     </div>
     <div class="content container">
-        <div class="book" th:if="${!book.getHidden()}">
+        <div class="book" th:if="${!book.getHidden() || (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
+            <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN') && book.getHidden()}" class="text-danger fs-3">
+                Книга наразі прихована в каталозі
+            </div>
             <div class="h3" th:text="${book.getTitle()}"></div>
             <div class="book-image-container">
                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true" th:if="${book.getFiles().size()>1}">
@@ -66,7 +69,8 @@
                 <span th:each="genre, iStats: ${book.getGenres()}" th:object="${genre}" th:text="${iStats.last ? genre.getName() : genre.getName() + ', '}">genre</span>
             </div>
         </div>
-        <div th:if="${book.getHidden()}">Книги не знайдено</div>
+        <div th:if="${book.getHidden() && (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )}">Книги не знайдено</div>
     </div>
     <div class="footer">
         <footer th:replace="~{fragment::footer}"></footer>

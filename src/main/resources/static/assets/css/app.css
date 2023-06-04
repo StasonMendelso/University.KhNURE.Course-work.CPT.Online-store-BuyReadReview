@@ -37,3 +37,6 @@
     display: flex;
     justify-content: center;
 }
+.book-card{
+    margin: 10px;
+}

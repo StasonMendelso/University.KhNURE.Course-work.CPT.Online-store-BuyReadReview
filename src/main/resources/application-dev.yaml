@@ -1,0 +1,7 @@
+app:
+  file:
+    bucket: rel:files-bucket
+    book-directory-bucket-name: book-directory
+  security:
+    authority: GUEST
+
