@@ -1,4 +1,3 @@
-DROP TABLE client_note_for_wishes;
 DROP TABLE book_review_edited;
 DROP TABLE receiver_contact;
 DROP TABLE card_payment;
@@ -6,7 +5,6 @@ DROP TABLE cash_payment;
 DROP TABLE edit_review_permission;
 DROP TABLE card_returned_funds_payment;
 DROP TABLE delivery_item;
-DROP TABLE book_review_request_for_publication_cancel;
 DROP TABLE deliveryman_contact;
 DROP TABLE delivery;
 DROP TABLE delivery_status;
@@ -304,16 +302,6 @@ CREATE INDEX XIE3request_for_publication_admin ON book_review_request_for_public
         );
 
 
-CREATE TABLE book_review_request_for_publication_cancel
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    reason                VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_request_for_publication_cancel_reason CHECK (reason != ""),
-    book_review_request_for_publication_id  BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
-
-
 CREATE TABLE book_review_request_for_publication_characteristic
 (
     request_for_publication_id  BIGINT NOT NULL,
@@ -508,15 +496,6 @@ CREATE TABLE `client`
 );
 
 
-CREATE TABLE client_note_for_wishes
-(
-    wish_description      MEDIUMTEXT NOT NULL,
-    manager_id            BIGINT NOT NULL,
-    id_request            BIGINT NOT NULL,
-    PRIMARY KEY (id_request)
-);
-
-
 CREATE TABLE courier_delivery
 (
     address               VARCHAR(100) NOT NULL,
@@ -532,6 +511,7 @@ CREATE TABLE delivery
     courier_id            BIGINT NOT NULL,
     id                    BIGINT NOT NULL ,
     delivery_status_id    BIGINT NOT NULL,
+    date_of_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -574,6 +554,8 @@ CREATE TABLE delivery_request
     order_id              BIGINT NOT NULL,
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     delivery_request_status_id  BIGINT NOT NULL,
+    client_wish_description   MEDIUMTEXT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -917,11 +899,6 @@ ALTER TABLE book_review_request_for_publication
 
 ALTER TABLE book_review_request_for_publication
     ADD FOREIGN KEY R_208 (check_request_id) REFERENCES book_review_request_for_checking(id);
-
-
-ALTER TABLE book_review_request_for_publication_cancel
-    ADD FOREIGN KEY R_359 (book_review_request_for_publication_id) REFERENCES book_review_request_for_publication(id)
-        ON DELETE CASCADE;
 
 
 ALTER TABLE book_review_request_for_publication_characteristic
