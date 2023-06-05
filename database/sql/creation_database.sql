@@ -29,7 +29,6 @@ DROP TABLE payment_method;
 DROP TABLE book_genre;
 DROP TABLE genre;
 DROP TABLE book_review_final;
-DROP TABLE book_review_comment;
 DROP TABLE book_file;
 DROP TABLE `file`;
 DROP TABLE book_review_with_tag;
@@ -171,17 +170,6 @@ CREATE INDEX XIE1review_characteristic_name ON book_review_characteristic
     (
      `name`
         );
-
-
-CREATE TABLE book_review_comment
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `comment`               VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_comment_comment CHECK (`comment` != ""),
-    book_review_id        BIGINT NOT NULL,
-    client_id             BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE book_review_draft
@@ -843,15 +831,6 @@ ALTER TABLE book_review
     ADD FOREIGN KEY R_327 (client_id) REFERENCES `client`(id);
 
 
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_329 (book_review_id) REFERENCES book_review(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_330 (client_id) REFERENCES `client`(id)
-        ON DELETE CASCADE;
-
-
 ALTER TABLE book_review_draft
     ADD FOREIGN KEY R_201 (client_id) REFERENCES `client`(id)
         ON DELETE CASCADE;
@@ -1103,4 +1082,3 @@ ALTER TABLE shop_delivery
 
 ALTER TABLE `user`
     ADD FOREIGN KEY R_178 (role_id) REFERENCES role(id);
-
