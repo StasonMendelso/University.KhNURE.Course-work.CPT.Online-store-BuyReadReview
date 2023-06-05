@@ -38,14 +38,14 @@ public class BookExtractor implements ResultSetExtractor<Book> {
 
         Book book = Book.builder()
                 .id(resultSet.getLong("book_id"))
-                .title(resultSet.getString("title"))
-                .article(resultSet.getString("article"))
-                .description(resultSet.getString("description"))
-                .hidden(resultSet.getBoolean("hidden"))
-                .isbn(resultSet.getString("isbn"))
-                .quantity(resultSet.getInt("quantity"))
-                .paperQuantity(resultSet.getInt("paper_quantity"))
-                .price(resultSet.getBigDecimal("price"))
+                .title(resultSet.getString("book_title"))
+                .article(resultSet.getString("book_article"))
+                .description(resultSet.getString("book_description"))
+                .hidden(resultSet.getBoolean("book_hidden"))
+                .isbn(resultSet.getString("book_isbn"))
+                .quantity(resultSet.getInt("book_quantity"))
+                .paperQuantity(resultSet.getInt("book_paper_quantity"))
+                .price(resultSet.getBigDecimal("book_price"))
                 .publisher(publisherRowMapper.mapRow(resultSet, 1))
                 .build();
 

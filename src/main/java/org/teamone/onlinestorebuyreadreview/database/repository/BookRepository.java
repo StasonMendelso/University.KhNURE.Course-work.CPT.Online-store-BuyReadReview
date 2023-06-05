@@ -62,7 +62,7 @@ public class BookRepository implements CrudRepository<Long, Book> {
 
     public Optional<Book> read(Long id) {
         return Optional.ofNullable(jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn, paper_quantity, title, description, price,hidden, quantity, article, " +
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
                                                                  "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
                                                                  "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
                                                                  "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
@@ -93,7 +93,7 @@ public class BookRepository implements CrudRepository<Long, Book> {
     @Override
     public List<Book> readAll() {
         return jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn, paper_quantity, title, description, price,hidden, quantity, article, " +
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
                                                                  "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
                                                                  "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
                                                                  "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +

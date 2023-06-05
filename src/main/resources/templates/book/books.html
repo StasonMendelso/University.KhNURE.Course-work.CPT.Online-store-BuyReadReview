@@ -12,7 +12,8 @@
     <div class="content container">
         <div class="d-flex flex-row justify-content-center">
             <div class="d-flex flex-row flex-wrap justify-content-center">
-                <div th:replace="~{fragment::bookRow(${bookList})}"></div>
+                <div th:replace="~{fragment::bookRow(${bookList})}" th:if="${!bookList.isEmpty()}"></div>
+                <div th:if="${bookList.isEmpty()}" class="h3"> Наразі каталог книг пустий</div>
             </div>
         </div>
 

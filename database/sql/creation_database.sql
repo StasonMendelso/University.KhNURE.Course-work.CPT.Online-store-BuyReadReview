@@ -976,14 +976,6 @@ ALTER TABLE `client`
     ADD FOREIGN KEY (id) REFERENCES `user`(id);
 
 
-ALTER TABLE client_note_for_wishes
-    ADD FOREIGN KEY R_171 (id_request) REFERENCES delivery_request(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE client_note_for_wishes
-    ADD FOREIGN KEY R_265 (manager_id) REFERENCES `user`(id);
-
-
 ALTER TABLE courier_delivery
     ADD FOREIGN KEY (id) REFERENCES delivery_info(id)
         ON DELETE CASCADE;

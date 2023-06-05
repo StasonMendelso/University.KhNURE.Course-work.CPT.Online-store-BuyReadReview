@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 import org.teamone.onlinestorebuyreadreview.util.validation.annotation.NotEmptyList;
 
@@ -29,6 +30,7 @@ public class CreateBookDto {
     @Pattern(regexp = "^[1-9][0-9]*$",message = "Книга повинна містити певну додатню кількість сторінок.")
     private String paperQuantity;
     @NotBlank(message = "Книга повинна містити опис.")
+    @Length(max = 3400, message = "Опис книги може містити лише 3.400 символів")
     private String description;
     @Pattern(regexp = "^[1-9][0-9]*(\\.[0-9]+)?$", message = "Некоректна ціна.")
     private String price;
