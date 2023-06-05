@@ -5,7 +5,6 @@ DROP TABLE cash_payment;
 DROP TABLE edit_review_permission;
 DROP TABLE card_returned_funds_payment;
 DROP TABLE delivery_item;
-DROP TABLE deliveryman_contact;
 DROP TABLE delivery;
 DROP TABLE delivery_status;
 DROP TABLE delivery_request;
@@ -492,14 +491,15 @@ CREATE TABLE courier_delivery
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE delivery
 (
-    description_for_status  MEDIUMTEXT NOT NULL,
+    id                    BIGINT NOT NULL AUTO_INCREMENT,
+    request_id                    BIGINT NOT NULL,
     courier_id            BIGINT NOT NULL,
-    id                    BIGINT NOT NULL ,
+    courier_telephone_number      VARCHAR(25) NOT NULL
+        CONSTRAINT  delivery_courier_telephone_number CHECK (delivery.courier_telephone_number != ""),
+    description_for_status  MEDIUMTEXT NOT NULL,
     delivery_status_id    BIGINT NOT NULL,
-    date_of_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -514,14 +514,14 @@ CREATE TABLE delivery_info
 
 CREATE TABLE delivery_item
 (
+    book_id               BIGINT NOT NULL,
+    delivery_id           BIGINT NOT NULL,
     price                 DECIMAL(30,8) NOT NULL
         CONSTRAINT  delivery_item_price CHECK (delivery_item.price >=0),
     quantity              FLOAT NOT NULL
         CONSTRAINT  delivery_item_quantity CHECK (quantity >0),
     book_title            VARCHAR(250) NOT NULL
         CONSTRAINT  delivery_item_book_title CHECK (book_title  != ""),
-    book_id               BIGINT NOT NULL,
-    delivery_id           BIGINT NOT NULL,
     PRIMARY KEY (book_id,delivery_id)
 );
 
@@ -536,14 +536,14 @@ CREATE TABLE delivery_method
 
 CREATE TABLE delivery_request
 (
-    description_for_status  MEDIUMTEXT NOT NULL,
+    id                    BIGINT NOT NULL AUTO_INCREMENT,
     manager_id            BIGINT NOT NULL,
     courier_id            BIGINT NULL,
     order_id              BIGINT NOT NULL,
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    delivery_request_status_id  BIGINT NOT NULL,
     client_wish_description   MEDIUMTEXT NULL,
     creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    delivery_request_status_id  BIGINT NOT NULL,
+    description_for_status  MEDIUMTEXT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -560,16 +560,6 @@ CREATE TABLE delivery_status
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     courier_delivery_status  VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-
-CREATE TABLE deliveryman_contact
-(
-    telephone_number      VARCHAR(25) NOT NULL
-        CONSTRAINT  deliveryman_contact_telephone_number CHECK (deliveryman_contact.telephone_number != ""),
-    id                    BIGINT NOT NULL,
-
     PRIMARY KEY (id)
 );
 
@@ -961,7 +951,7 @@ ALTER TABLE courier_delivery
 
 
 ALTER TABLE delivery
-    ADD FOREIGN KEY R_259 (id) REFERENCES delivery_request(id)
+    ADD FOREIGN KEY R_259 (request_id) REFERENCES delivery_request(id)
         ON DELETE CASCADE;
 
 ALTER TABLE delivery
@@ -999,11 +989,6 @@ ALTER TABLE delivery_request
 
 ALTER TABLE delivery_request
     ADD FOREIGN KEY R_269 (courier_id) REFERENCES `user`(id);
-
-
-ALTER TABLE deliveryman_contact
-    ADD FOREIGN KEY R_270 (id) REFERENCES delivery(id)
-        ON DELETE CASCADE;
 
 
 ALTER TABLE edit_review_permission
