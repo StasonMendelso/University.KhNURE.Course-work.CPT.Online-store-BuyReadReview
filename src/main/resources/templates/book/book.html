@@ -68,6 +68,9 @@
                 Genre(-s):
                 <span th:each="genre, iStats: ${book.getGenres()}" th:object="${genre}" th:text="${iStats.last ? genre.getName() : genre.getName() + ', '}">genre</span>
             </div>
+            <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
+                <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
+            </div>
         </div>
         <div th:if="${book.getHidden() && (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
                             #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )}">Книги не знайдено</div>

@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
 import org.teamone.onlinestorebuyreadreview.util.validation.annotation.NotEmptyList;
 
 import java.util.ArrayList;
@@ -22,7 +21,10 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Builder
 @ToString
-public class CreateBookDto {
+public class EditBookDto {
+
+    @Pattern(regexp = "^[1-9][0-9]*$",message = "Книга містить некоректне значення ідентифікатора.")
+    private String id;
     @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{4}-[0-9]{1}$", message = "ISBN повинен відповідати формату \"123-123-12-1234-1\".")
     private String isbn;
     @NotBlank(message = "Книга повинна мати назву.")
@@ -47,5 +49,4 @@ public class CreateBookDto {
     @NotEmptyList(message = "Виберіть жанр(-и) книги.")
     private ArrayList<String> genreNames = new ArrayList<>();
 
-    private ArrayList<MultipartFile> multipartFiles = new ArrayList<>();
 }

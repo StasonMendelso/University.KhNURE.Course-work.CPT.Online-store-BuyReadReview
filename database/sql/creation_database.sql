@@ -447,7 +447,7 @@ CREATE TABLE cart
 CREATE TABLE cart_item
 (
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  cart_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  cart_item_quantity CHECK (quantity >0),
     cart_id               BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (cart_id,book_id)
@@ -529,7 +529,7 @@ CREATE TABLE delivery_item
     price                 DECIMAL(30,8) NOT NULL
         CONSTRAINT  delivery_item_price CHECK (delivery_item.price >=0),
     quantity              FLOAT NOT NULL
-        CONSTRAINT  delivery_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  delivery_item_quantity CHECK (quantity >0),
     book_title            VARCHAR(250) NOT NULL
         CONSTRAINT  delivery_item_book_title CHECK (book_title  != ""),
     book_id               BIGINT NOT NULL,
@@ -658,7 +658,7 @@ CREATE TABLE order_item
     title                 VARCHAR(250) NOT NULL
         CONSTRAINT  order_item_title CHECK (title != ""),
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  order_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  order_item_quantity CHECK (quantity >0),
     order_id              BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (order_id,book_id)

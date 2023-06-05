@@ -1,14 +1,11 @@
-package org.teamone.onlinestorebuyreadreview.util.validation.validator;
+package org.teamone.onlinestorebuyreadreview.util.validation.validator.book;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.teamone.onlinestorebuyreadreview.dto.book.CreateBookDto;
-import org.teamone.onlinestorebuyreadreview.service.AuthorService;
 import org.teamone.onlinestorebuyreadreview.service.BookService;
-import org.teamone.onlinestorebuyreadreview.service.GenreService;
-import org.teamone.onlinestorebuyreadreview.service.PublisherService;
 
 /**
  * @author Stanislav Hlova

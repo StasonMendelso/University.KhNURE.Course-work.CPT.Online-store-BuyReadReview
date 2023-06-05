@@ -155,7 +155,7 @@
             <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
             <p class="card-text" th:text="${book.getPrice()}"></p>
             <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
-            <a href="#" class="btn btn-warning">Редагувати</a>
+            <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
         </div>
     </div>
     <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||

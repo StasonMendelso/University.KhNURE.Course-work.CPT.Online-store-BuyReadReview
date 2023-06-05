@@ -9,8 +9,10 @@ import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import org.teamone.onlinestorebuyreadreview.database.entity.Genre;
 import org.teamone.onlinestorebuyreadreview.database.repository.BookRepository;
 import org.teamone.onlinestorebuyreadreview.dto.book.CreateBookDto;
+import org.teamone.onlinestorebuyreadreview.dto.book.EditBookDto;
 import org.teamone.onlinestorebuyreadreview.dto.book.ReadBookDto;
 import org.teamone.onlinestorebuyreadreview.util.mapper.book.BookCreateMapper;
+import org.teamone.onlinestorebuyreadreview.util.mapper.book.BookEditMapper;
 import org.teamone.onlinestorebuyreadreview.util.mapper.book.BookReadMapper;
 
 import java.util.ArrayList;
@@ -28,52 +30,26 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookReadMapper bookReadMapper;
     private final BookCreateMapper bookCreateMapper;
+    private final BookEditMapper bookEditMapper;
     private final AuthorService authorService;
     private final PublisherService publisherService;
     private final GenreService genreService;
     private final FileService fileService;
 
-    public Optional<ReadBookDto> getBookById(Long id) {
-        return bookRepository.read(id).map(bookReadMapper::map);
+    public Optional<Book> getBookById(Long id) {
+        return bookRepository.read(id);
     }
 
-    public List<ReadBookDto> getAllBooks() {
-        return bookRepository.readAll().stream().map(bookReadMapper::map).toList();
+    public List<Book> getAllBooks() {
+        return bookRepository.readAll();
     }
 
     @Transactional
     public Optional<ReadBookDto> save(CreateBookDto createBookDto) {
         Book book = bookCreateMapper.unmap(createBookDto);
 
-        List<Author> authors = authorService.getAuthorsByFullName(createBookDto.getAuthorNames());
-        List<Author> authorsForAdding = new ArrayList<>();
-        for (String authorFullName : createBookDto.getAuthorNames()) {
-            if (authors.stream().map(Author::getFullName).noneMatch(s -> s.equals(authorFullName))) {
-                authorsForAdding.add(Author.builder().fullName(authorFullName).build());
-            }
-        }
-        if (!authorsForAdding.isEmpty()) {
-            List<Author> addedAuthors = authorService.saveAuthors(authorsForAdding);
-            authors.addAll(addedAuthors);
-        }
-        book.setAuthors(authors);
+        saveOrUpdateBookData(book, createBookDto.getAuthorNames(), createBookDto.getGenreNames());
 
-        List<Genre> genres = genreService.getGenresByName(createBookDto.getGenreNames());
-        List<Genre> genresForAdding = new ArrayList<>();
-        for (String genreName : createBookDto.getGenreNames()) {
-            if (genres.stream().map(Genre::getName).noneMatch(s -> s.equals(genreName))) {
-                genresForAdding.add(Genre.builder().name(genreName).build());
-            }
-        }
-        if (!genresForAdding.isEmpty()) {
-            List<Genre> addedGenres = genreService.saveGenres(genresForAdding);
-            genres.addAll(addedGenres);
-        }
-        book.setGenres(genres);
-
-        book.setPublisher(publisherService.getPublisherByName(book.getPublisher().getName())
-                .orElseGet(() -> publisherService.save(book.getPublisher())
-                        .orElseThrow()));
         Optional<Book> bookOptional = bookRepository.create(book);
 
         if (bookOptional.isPresent()) {
@@ -93,5 +69,56 @@ public class BookService {
 
     public List<String> getAllArticle() {
         return bookRepository.readAllArticle();
+    }
+
+    public Optional<String> getIsbnByBookId(Long bookId) {
+        return bookRepository.readIsbnByBookId(bookId);
+    }
+
+    public Optional<String> getArticleByBookId(Long bookId) {
+        return bookRepository.readArticleByBookId(bookId);
+    }
+    @Transactional
+    public Optional<ReadBookDto> update(EditBookDto editBookDto) {
+        Book book = bookEditMapper.unmap(editBookDto);
+
+        saveOrUpdateBookData(book, editBookDto.getAuthorNames(), editBookDto.getGenreNames());
+
+        Optional<Book> bookOptional = bookRepository.update(book.getId(),book);
+
+        return bookOptional.map(bookReadMapper::map);
+    }
+
+    private void saveOrUpdateBookData(Book book, ArrayList<String> authorNames, ArrayList<String> genreNames) {
+
+        List<Author> authors = authorService.getAuthorsByFullName(authorNames);
+        List<Author> authorsForAdding = new ArrayList<>();
+        for (String authorFullName : authorNames) {
+            if (authors.stream().map(Author::getFullName).noneMatch(s -> s.equals(authorFullName))) {
+                authorsForAdding.add(Author.builder().fullName(authorFullName).build());
+            }
+        }
+        if (!authorsForAdding.isEmpty()) {
+            List<Author> addedAuthors = authorService.saveAuthors(authorsForAdding);
+            authors.addAll(addedAuthors);
+        }
+        book.setAuthors(authors);
+
+        List<Genre> genres = genreService.getGenresByName(genreNames);
+        List<Genre> genresForAdding = new ArrayList<>();
+        for (String genreName : genreNames) {
+            if (genres.stream().map(Genre::getName).noneMatch(s -> s.equals(genreName))) {
+                genresForAdding.add(Genre.builder().name(genreName).build());
+            }
+        }
+        if (!genresForAdding.isEmpty()) {
+            List<Genre> addedGenres = genreService.saveGenres(genresForAdding);
+            genres.addAll(addedGenres);
+        }
+        book.setGenres(genres);
+
+        book.setPublisher(publisherService.getPublisherByName(book.getPublisher().getName())
+                .orElseGet(() -> publisherService.save(book.getPublisher())
+                        .orElseThrow()));
     }
 }
