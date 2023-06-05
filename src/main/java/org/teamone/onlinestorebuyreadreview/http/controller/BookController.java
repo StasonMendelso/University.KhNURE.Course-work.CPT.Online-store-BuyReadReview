@@ -2,10 +2,6 @@ package org.teamone.onlinestorebuyreadreview.http.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +22,8 @@ import org.teamone.onlinestorebuyreadreview.service.AuthorService;
 import org.teamone.onlinestorebuyreadreview.service.BookService;
 import org.teamone.onlinestorebuyreadreview.service.GenreService;
 import org.teamone.onlinestorebuyreadreview.service.PublisherService;
+import org.teamone.onlinestorebuyreadreview.util.validation.validator.CreateBookDtoValidator;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,13 +38,10 @@ public class BookController {
     private final AuthorService authorService;
     private final GenreService genreService;
     private final PublisherService publisherService;
+    private final CreateBookDtoValidator createBookDtoValidator;
 
     @GetMapping
     public String viewBooks(Model model) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        Collection<GrantedAuthority> authorityCollection = (Collection<GrantedAuthority>) authentication.getAuthorities();
-        authorityCollection.stream().forEach(grantedAuthority -> System.out.println(grantedAuthority.getAuthority()));
         model.addAttribute("bookList", bookService.getAllBooks());
         return "book/books";
     }
@@ -82,7 +75,8 @@ public class BookController {
     public String createBook(@ModelAttribute("createBookDto") @Validated CreateBookDto createBookDto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
-        //TODO: 03.06.2023 add validation for checking values from database
+
+        createBookDtoValidator.validate(createBookDto,bindingResult);
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("createBookDto", createBookDto);

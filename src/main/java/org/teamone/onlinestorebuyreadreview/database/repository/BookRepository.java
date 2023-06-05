@@ -42,8 +42,8 @@ public class BookRepository implements CrudRepository<Long, Book> {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
                 int index = 1;
-                preparedStatement.setLong(index++,generatedKey);
-                preparedStatement.setLong(index,entity.getGenres().get(i).getId());
+                preparedStatement.setLong(index++, generatedKey);
+                preparedStatement.setLong(index, entity.getGenres().get(i).getId());
             }
 
         });
@@ -51,8 +51,8 @@ public class BookRepository implements CrudRepository<Long, Book> {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
                 int index = 1;
-                preparedStatement.setLong(index++,generatedKey);
-                preparedStatement.setLong(index,entity.getAuthors().get(i).getId());
+                preparedStatement.setLong(index++, generatedKey);
+                preparedStatement.setLong(index, entity.getAuthors().get(i).getId());
             }
         });
 
@@ -108,5 +108,15 @@ public class BookRepository implements CrudRepository<Long, Book> {
                                                                  "LEFT JOIN file ON book_file.file_id = file.id"),
                 readBooksExtractor);
 
+    }
+
+    public List<String> readAllIsbn() {
+        return jdbcTemplate.query("SELECT book.isbn AS 'book_isbn' " +
+                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_isbn"));
+    }
+
+    public List<String> readAllArticle() {
+        return jdbcTemplate.query("SELECT book.article AS 'book_article' " +
+                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_article"));
     }
 }

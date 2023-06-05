@@ -86,4 +86,12 @@ public class BookService {
 
         return bookOptional.map(bookReadMapper::map);
     }
+
+    public List<String> getAllIsbn() {
+        return bookRepository.readAllIsbn();
+    }
+
+    public List<String> getAllArticle() {
+        return bookRepository.readAllArticle();
+    }
 }
