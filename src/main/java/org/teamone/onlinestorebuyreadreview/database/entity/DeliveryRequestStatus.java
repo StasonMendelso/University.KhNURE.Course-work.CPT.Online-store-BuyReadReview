@@ -2,6 +2,7 @@ package org.teamone.onlinestorebuyreadreview.database.entity;
 /**
  * @author Starukhina Anastasiia
  */
+@Getter
 public enum DeliveryRequestStatus {
     CREATED ("Створено"),
     SELECTED("Обрано"),
