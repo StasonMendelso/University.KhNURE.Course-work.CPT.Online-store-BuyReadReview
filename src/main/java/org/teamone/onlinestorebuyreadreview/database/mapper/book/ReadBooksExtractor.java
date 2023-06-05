@@ -9,6 +9,7 @@ import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,12 +19,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadBooksExtractor implements ResultSetExtractor<List<Book>> {
     private final BookExtractor bookExtractor;
+
     @Override
     public List<Book> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+        if (!resultSet.isBeforeFirst()) {
+            return Collections.emptyList();
+        }
         List<Book> books = new ArrayList<>();
-        do{
+        do {
             books.add(bookExtractor.extractData(resultSet));
-        }while (!resultSet.isAfterLast());
+        } while (!resultSet.isAfterLast());
         return books;
     }
 }

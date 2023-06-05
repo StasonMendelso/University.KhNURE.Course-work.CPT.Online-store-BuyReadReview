@@ -11,7 +11,6 @@ import org.teamone.onlinestorebuyreadreview.database.entity.Genre;
 import org.teamone.onlinestorebuyreadreview.database.mapper.author.AuthorRowMapper;
 import org.teamone.onlinestorebuyreadreview.database.mapper.file.FileRowMapper;
 import org.teamone.onlinestorebuyreadreview.database.mapper.genre.GenreRowMapper;
-import org.teamone.onlinestorebuyreadreview.database.mapper.publisher.PublisherRowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,10 +24,10 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class BookExtractor implements ResultSetExtractor<Book> {
-    private final PublisherRowMapper publisherRowMapper;
     private final AuthorRowMapper authorRowMapper;
     private final GenreRowMapper genreRowMapper;
     private final FileRowMapper fileRowMapper;
+    private final BookRowMapper bookRowMapper;
 
     @Override
     public Book extractData(ResultSet resultSet) throws SQLException, DataAccessException {
@@ -36,18 +35,7 @@ public class BookExtractor implements ResultSetExtractor<Book> {
             return null;
         }
 
-        Book book = Book.builder()
-                .id(resultSet.getLong("book_id"))
-                .title(resultSet.getString("title"))
-                .article(resultSet.getString("article"))
-                .description(resultSet.getString("description"))
-                .hidden(resultSet.getBoolean("hidden"))
-                .isbn(resultSet.getString("isbn"))
-                .quantity(resultSet.getInt("quantity"))
-                .paperQuantity(resultSet.getInt("paper_quantity"))
-                .price(resultSet.getBigDecimal("price"))
-                .publisher(publisherRowMapper.mapRow(resultSet, 1))
-                .build();
+        Book book = bookRowMapper.mapRow(resultSet, resultSet.getRow());
 
         Set<Author> authors = new HashSet<>();
         Set<Genre> genres = new HashSet<>();

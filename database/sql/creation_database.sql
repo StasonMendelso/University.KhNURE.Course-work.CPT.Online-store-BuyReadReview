@@ -28,7 +28,6 @@ DROP TABLE payment_method;
 DROP TABLE book_genre;
 DROP TABLE genre;
 DROP TABLE book_review_final;
-DROP TABLE book_review_comment;
 DROP TABLE book_file;
 DROP TABLE `file`;
 DROP TABLE book_review_with_tag;
@@ -170,17 +169,6 @@ CREATE INDEX XIE1review_characteristic_name ON book_review_characteristic
     (
      `name`
         );
-
-
-CREATE TABLE book_review_comment
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `comment`               VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_comment_comment CHECK (`comment` != ""),
-    book_review_id        BIGINT NOT NULL,
-    client_id             BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE book_review_draft
@@ -446,7 +434,7 @@ CREATE TABLE cart
 CREATE TABLE cart_item
 (
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  cart_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  cart_item_quantity CHECK (quantity >0),
     cart_id               BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (cart_id,book_id)
@@ -531,7 +519,7 @@ CREATE TABLE delivery_item
     price                 DECIMAL(30,8) NOT NULL
         CONSTRAINT  delivery_item_price CHECK (delivery_item.price >=0),
     quantity              FLOAT NOT NULL
-        CONSTRAINT  delivery_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  delivery_item_quantity CHECK (quantity >0),
     book_title            VARCHAR(250) NOT NULL
         CONSTRAINT  delivery_item_book_title CHECK (book_title  != ""),
     PRIMARY KEY (book_id,delivery_id)
@@ -648,7 +636,7 @@ CREATE TABLE order_item
     title                 VARCHAR(250) NOT NULL
         CONSTRAINT  order_item_title CHECK (title != ""),
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  order_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  order_item_quantity CHECK (quantity >0),
     order_id              BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (order_id,book_id)
@@ -831,15 +819,6 @@ ALTER TABLE book_review
 
 ALTER TABLE book_review
     ADD FOREIGN KEY R_327 (client_id) REFERENCES `client`(id);
-
-
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_329 (book_review_id) REFERENCES book_review(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_330 (client_id) REFERENCES `client`(id)
-        ON DELETE CASCADE;
 
 
 ALTER TABLE book_review_draft
@@ -1080,4 +1059,3 @@ ALTER TABLE shop_delivery
 
 ALTER TABLE `user`
     ADD FOREIGN KEY R_178 (role_id) REFERENCES role(id);
-

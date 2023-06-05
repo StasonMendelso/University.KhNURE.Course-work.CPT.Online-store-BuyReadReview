@@ -6,6 +6,10 @@ spring:
     url: <your database url>
   profiles:
     active: no-security
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 server:
   servlet:
     context-path: /buy-read-review
@@ -13,4 +17,4 @@ server:
 app:
   file:
       bucket: <your bucket name>
-          book-directory-bucket-name: book-directory
+      book-directory-bucket-name: book-directory

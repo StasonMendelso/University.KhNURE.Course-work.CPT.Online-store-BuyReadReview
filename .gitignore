@@ -2,6 +2,7 @@
 .git
 target/
 /src/**/resources/application.yaml
+/src/**/resources/application-dev.yaml
 **.log
 /HELP.md
 
