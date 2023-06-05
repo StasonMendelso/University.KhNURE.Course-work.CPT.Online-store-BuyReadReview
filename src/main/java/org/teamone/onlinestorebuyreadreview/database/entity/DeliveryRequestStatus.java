@@ -1,7 +1,11 @@
 package org.teamone.onlinestorebuyreadreview.database.entity;
+
+import lombok.Getter;
+
 /**
  * @author Starukhina Anastasiia
  */
+@Getter
 public enum DeliveryRequestStatus {
     CREATED ("Створено"),
     SELECTED("Обрано"),

@@ -5,12 +5,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import org.teamone.onlinestorebuyreadreview.database.entity.Delivery;
-import org.teamone.onlinestorebuyreadreview.database.mapper.book.BookExtractor;
-import org.teamone.onlinestorebuyreadreview.database.mapper.book.ReadBooksExtractor;
+import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryStatus;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.DeliveryExtractor;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.ReadDeliveriesExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookUpdateStatementSetter;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +31,22 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
         return Optional.empty();
     }
 
+    public Optional<Delivery> update(Long deliveryId, DeliveryStatus deliveryStatus) {
+        String query = "SELECT id FROM table_name WHERE attribute = ?";
+        Long statusId = jdbcTemplate.queryForObject("SELECT id FROM delivery_status WHERE courier_delivery_status = ?", Long.class, deliveryStatus.getName());
 
-    @Override
-    public Optional<Delivery> update(Long id, Delivery entity) {
+/*        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE delivery " +
+                    "SET delivery_status_id = ?" +
+                    "WHERE delivery.id = ?", statusId, deliveryId);
+            return preparedStatement;
+        });
+        jdbcTemplate.update("DELETE FROM book_genre WHERE book_id = ? ", id);
+        jdbcTemplate.update("DELETE FROM author_book WHERE book_id = ? ", id);
+        insertIntoBookGenre(id, book.getGenres());
+        insertIntoAuthorBook(id, book.getAuthors());*/
+
+        //return null;
         return Optional.empty();
     }
 
@@ -44,6 +58,11 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
                         "FROM delivery LEFT JOIN delivery_status ON delivery.delivery_status_id = delivery_status.id WHERE delivery.id = ?"),
                 preparedStatement -> preparedStatement.setLong(1, id),
                 deliveryExtractor));
+    }
+
+    @Override
+    public Optional<Delivery> update(Long id, Delivery entity) {
+        return Optional.empty();
     }
 
     @Override

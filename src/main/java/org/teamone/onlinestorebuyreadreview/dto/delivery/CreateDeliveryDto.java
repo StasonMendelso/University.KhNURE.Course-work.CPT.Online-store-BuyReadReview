@@ -16,7 +16,7 @@ import lombok.*;
 public class CreateDeliveryDto {
     private String id;
     private String courierId;
-    @NotBlank(message = "Статус має бути обов'язково заповненим.")
+    @NotBlank(message = ".")
     private String creationDate;
     @NotBlank(message = "Статус має бути обов'язково заповненим.")
     private String deliveryStatus;
