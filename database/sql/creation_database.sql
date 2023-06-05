@@ -1,3 +1,4 @@
+DROP TABLE client_note_for_wishes;
 DROP TABLE book_review_edited;
 DROP TABLE receiver_contact;
 DROP TABLE card_payment;
@@ -5,6 +6,7 @@ DROP TABLE cash_payment;
 DROP TABLE edit_review_permission;
 DROP TABLE card_returned_funds_payment;
 DROP TABLE delivery_item;
+DROP TABLE book_review_request_for_publication_cancel;
 DROP TABLE deliveryman_contact;
 DROP TABLE delivery;
 DROP TABLE delivery_status;
@@ -29,7 +31,6 @@ DROP TABLE payment_method;
 DROP TABLE book_genre;
 DROP TABLE genre;
 DROP TABLE book_review_final;
-DROP TABLE book_review_comment;
 DROP TABLE book_file;
 DROP TABLE `file`;
 DROP TABLE book_review_with_tag;
@@ -87,7 +88,7 @@ CREATE TABLE book
         CONSTRAINT  book_title CHECK (title != ""),
     `description`           MEDIUMTEXT NOT NULL
         CONSTRAINT  book_description CHECK (`description` != ""),
-    isbn                  VARCHAR(18) NOT NULL
+    isbn                  VARCHAR(16) NOT NULL
         CONSTRAINT  book_isbn CHECK (isbn != ""),
     hidden                boolean NOT NULL DEFAULT 0,
     price                 DECIMAL(30,8) NOT NULL DEFAULT 0
@@ -171,17 +172,6 @@ CREATE INDEX XIE1review_characteristic_name ON book_review_characteristic
     (
      `name`
         );
-
-
-CREATE TABLE book_review_comment
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `comment`               VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_comment_comment CHECK (`comment` != ""),
-    book_review_id        BIGINT NOT NULL,
-    client_id             BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE book_review_draft
@@ -300,6 +290,16 @@ CREATE INDEX XIE3request_for_publication_admin ON book_review_request_for_public
     (
      admin_id
         );
+
+
+CREATE TABLE book_review_request_for_publication_cancel
+(
+    id                    BIGINT NOT NULL AUTO_INCREMENT,
+    reason                VARCHAR(200) NOT NULL
+        CONSTRAINT  book_review_request_for_publication_cancel_reason CHECK (reason != ""),
+    book_review_request_for_publication_id  BIGINT NOT NULL,
+    PRIMARY KEY (id)
+);
 
 
 CREATE TABLE book_review_request_for_publication_characteristic
@@ -496,6 +496,15 @@ CREATE TABLE `client`
 );
 
 
+CREATE TABLE client_note_for_wishes
+(
+    wish_description      MEDIUMTEXT NOT NULL,
+    manager_id            BIGINT NOT NULL,
+    id_request            BIGINT NOT NULL,
+    PRIMARY KEY (id_request)
+);
+
+
 CREATE TABLE courier_delivery
 (
     address               VARCHAR(100) NOT NULL,
@@ -511,7 +520,6 @@ CREATE TABLE delivery
     courier_id            BIGINT NOT NULL,
     id                    BIGINT NOT NULL ,
     delivery_status_id    BIGINT NOT NULL,
-    date_of_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -554,8 +562,6 @@ CREATE TABLE delivery_request
     order_id              BIGINT NOT NULL,
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     delivery_request_status_id  BIGINT NOT NULL,
-    client_wish_description   MEDIUMTEXT NULL,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -613,7 +619,7 @@ CREATE UNIQUE INDEX unique_relative_path ON `file`
 CREATE TABLE genre
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
-    name                  VARCHAR(200) NOT NULL UNIQUE,
+    name                  VARCHAR(200) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -704,7 +710,7 @@ CREATE TABLE payment_status
 CREATE TABLE publisher
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
-    name                  VARCHAR(200) NOT NULL UNIQUE,
+    name                  VARCHAR(200) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -843,15 +849,6 @@ ALTER TABLE book_review
     ADD FOREIGN KEY R_327 (client_id) REFERENCES `client`(id);
 
 
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_329 (book_review_id) REFERENCES book_review(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_330 (client_id) REFERENCES `client`(id)
-        ON DELETE CASCADE;
-
-
 ALTER TABLE book_review_draft
     ADD FOREIGN KEY R_201 (client_id) REFERENCES `client`(id)
         ON DELETE CASCADE;
@@ -899,6 +896,11 @@ ALTER TABLE book_review_request_for_publication
 
 ALTER TABLE book_review_request_for_publication
     ADD FOREIGN KEY R_208 (check_request_id) REFERENCES book_review_request_for_checking(id);
+
+
+ALTER TABLE book_review_request_for_publication_cancel
+    ADD FOREIGN KEY R_359 (book_review_request_for_publication_id) REFERENCES book_review_request_for_publication(id)
+        ON DELETE CASCADE;
 
 
 ALTER TABLE book_review_request_for_publication_characteristic
@@ -1103,4 +1105,3 @@ ALTER TABLE shop_delivery
 
 ALTER TABLE `user`
     ADD FOREIGN KEY R_178 (role_id) REFERENCES role(id);
-
