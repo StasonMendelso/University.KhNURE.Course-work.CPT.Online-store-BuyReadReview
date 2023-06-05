@@ -5,12 +5,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.teamone.onlinestorebuyreadreview.database.entity.Author;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
+import org.teamone.onlinestorebuyreadreview.database.entity.Genre;
 import org.teamone.onlinestorebuyreadreview.database.mapper.book.BookExtractor;
 import org.teamone.onlinestorebuyreadreview.database.mapper.book.ReadBooksExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
 import org.teamone.onlinestorebuyreadreview.database.statement.setter.BatchPreparedStatementSetterWithBatchSize;
-import org.teamone.onlinestorebuyreadreview.database.statement.setter.BookInsertStatementSetter;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookInsertStatementSetter;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookUpdateStatementSetter;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -30,31 +33,16 @@ public class BookRepository implements CrudRepository<Long, Book> {
     private final ReadBooksExtractor readBooksExtractor;
 
     @Override
-    public Optional<Book> create(Book entity) {
+    public Optional<Book> create(Book book) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO book(paper_quantity, title, description, isbn, hidden, price, quantity, article, publisher_id) VALUE (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            new BookInsertStatementSetter(entity).setValues(preparedStatement);
+            new BookInsertStatementSetter(book).setValues(preparedStatement);
             return preparedStatement;
         }, keyHolder);
         Long generatedKey = keyHolder.getKey().longValue();
-        jdbcTemplate.batchUpdate("INSERT INTO book_genre(book_id, genre_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(entity.getGenres().size()) {
-            @Override
-            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                int index = 1;
-                preparedStatement.setLong(index++,generatedKey);
-                preparedStatement.setLong(index,entity.getGenres().get(i).getId());
-            }
-
-        });
-        jdbcTemplate.batchUpdate("INSERT INTO author_book(book_id, author_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(entity.getAuthors().size()) {
-            @Override
-            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                int index = 1;
-                preparedStatement.setLong(index++,generatedKey);
-                preparedStatement.setLong(index,entity.getAuthors().get(i).getId());
-            }
-        });
+        insertIntoBookGenre(generatedKey, book.getGenres());
+        insertIntoAuthorBook(generatedKey, book.getAuthors());
 
 
         return read(generatedKey);
@@ -62,7 +50,7 @@ public class BookRepository implements CrudRepository<Long, Book> {
 
     public Optional<Book> read(Long id) {
         return Optional.ofNullable(jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn, paper_quantity, title, description, price,hidden, quantity, article, " +
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
                                                                  "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
                                                                  "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
                                                                  "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
@@ -81,19 +69,56 @@ public class BookRepository implements CrudRepository<Long, Book> {
     }
 
     @Override
-    public Optional<Book> update(Long id, Book entity) {
-        return Optional.empty();
+    public Optional<Book> update(Long id, Book book) {
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE book " +
+                                                                              "SET paper_quantity = ?, title = ?, description = ?, isbn = ?, hidden = ?, price = ?, quantity = ?, article = ?, publisher_id = ? " +
+                                                                              "WHERE book.id = ?");
+
+            new BookUpdateStatementSetter(id,book).setValues(preparedStatement);
+            return preparedStatement;
+        });
+        jdbcTemplate.update("DELETE FROM book_genre WHERE book_id = ? ", id);
+        jdbcTemplate.update("DELETE FROM author_book WHERE book_id = ? ", id);
+        insertIntoBookGenre(id, book.getGenres());
+        insertIntoAuthorBook(id, book.getAuthors());
+
+
+        return read(id);
+    }
+
+    private void insertIntoAuthorBook(Long bookId, List<Author> authors) {
+        jdbcTemplate.batchUpdate("INSERT INTO author_book(book_id, author_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(authors.size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++, bookId);
+                preparedStatement.setLong(index, authors.get(i).getId());
+            }
+        });
+    }
+
+    private void insertIntoBookGenre(Long bookId, List<Genre> genres) {
+        jdbcTemplate.batchUpdate("INSERT INTO book_genre(book_id, genre_id) VALUE (?,?)", new BatchPreparedStatementSetterWithBatchSize(genres.size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++, bookId);
+                preparedStatement.setLong(index, genres.get(i).getId());
+            }
+
+        });
     }
 
     @Override
     public void delete(Long id) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Book> readAll() {
         return jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn, paper_quantity, title, description, price,hidden, quantity, article, " +
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
                                                                  "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
                                                                  "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
                                                                  "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
@@ -108,5 +133,37 @@ public class BookRepository implements CrudRepository<Long, Book> {
                                                                  "LEFT JOIN file ON book_file.file_id = file.id"),
                 readBooksExtractor);
 
+    }
+
+    public List<String> readAllIsbn() {
+        return jdbcTemplate.query("SELECT book.isbn AS 'book_isbn' " +
+                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_isbn"));
+    }
+
+    public List<String> readAllArticle() {
+        return jdbcTemplate.query("SELECT book.article AS 'book_article' " +
+                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_article"));
+    }
+
+    public Optional<String> readIsbnByBookId(Long bookId) {
+        return Optional.ofNullable(jdbcTemplate.query("SELECT book.isbn AS 'book_isbn' " +
+                                                      "FROM book " +
+                                                      "WHERE book.id = ?", resultSet -> {
+            if (resultSet.next()) {
+                return resultSet.getString("book_isbn");
+            }
+            return null;
+        }, bookId));
+    }
+
+    public Optional<String> readArticleByBookId(Long bookId) {
+        return Optional.ofNullable(jdbcTemplate.query("SELECT book.article AS 'book_article' " +
+                                                      "FROM book " +
+                                                      "WHERE book.id = ?", resultSet -> {
+            if (resultSet.next()) {
+                return resultSet.getString("book_article");
+            }
+            return null;
+        }, bookId));
     }
 }

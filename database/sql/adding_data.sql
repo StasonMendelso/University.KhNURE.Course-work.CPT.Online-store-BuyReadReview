@@ -156,15 +156,6 @@ LOCK TABLES `book_review_request_for_publication` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `book_review_request_for_publication_cancel`
---
-
-LOCK TABLES `book_review_request_for_publication_cancel` WRITE;
-/*!40000 ALTER TABLE `book_review_request_for_publication_cancel` DISABLE KEYS */;
-/*!40000 ALTER TABLE `book_review_request_for_publication_cancel` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `book_review_request_for_publication_characteristic`
 --
 
@@ -315,15 +306,6 @@ UNLOCK TABLES;
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `client_note_for_wishes`
---
-
-LOCK TABLES `client_note_for_wishes` WRITE;
-/*!40000 ALTER TABLE `client_note_for_wishes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `client_note_for_wishes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

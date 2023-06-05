@@ -1,6 +1,7 @@
-package org.teamone.onlinestorebuyreadreview.database.statement.setter;
+package org.teamone.onlinestorebuyreadreview.database.statement.setter.book;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 
@@ -10,12 +11,19 @@ import java.sql.SQLException;
 /**
  * @author Stanislav Hlova
  */
-@RequiredArgsConstructor
-public class BookInsertStatementSetter implements PreparedStatementSetter {
-    private final Book book;
+@AllArgsConstructor
+@Getter
+public abstract class BookGeneralStatementSetter implements PreparedStatementSetter {
+    int index;
+    final Book book;
+
+    public BookGeneralStatementSetter(Book book) {
+        this.index = 1;
+        this.book = book;
+    }
+
     @Override
     public void setValues(PreparedStatement preparedStatement) throws SQLException {
-        int index = 1;
         preparedStatement.setInt(index++,book.getPaperQuantity());
         preparedStatement.setString(index++,book.getTitle());
         preparedStatement.setString(index++,book.getDescription());
