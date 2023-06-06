@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeliveryRepository implements CrudRepository<Long, Delivery>{
     private final JdbcTemplate jdbcTemplate;
-
     private final DeliveryExtractor deliveryExtractor;
     private final ReadDeliveriesExtractor readDeliveriesExtractor;
 
@@ -31,16 +30,22 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
         return Optional.empty();
     }
 
-    public Optional<Delivery> update(Long deliveryId, DeliveryStatus deliveryStatus) {
-        String query = "SELECT id FROM table_name WHERE attribute = ?";
+    public Optional<Delivery> update(/*Long deliveryId, Delivery delivery*/) {
+        /*String query = "SELECT id FROM table_name WHERE attribute = ?";
         Long statusId = jdbcTemplate.queryForObject("SELECT id FROM delivery_status WHERE courier_delivery_status = ?", Long.class, deliveryStatus.getName());
 
-/*        jdbcTemplate.update(connection -> {
+        jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE delivery " +
                     "SET delivery_status_id = ?" +
-                    "WHERE delivery.id = ?", statusId, deliveryId);
+                    "WHERE delivery.id = ?");
+            int index =  1;
+            preparedStatement.setLong(index++, statusId);
+            preparedStatement.setLong(index, deliveryId);
             return preparedStatement;
-        });
+        });*/
+        //jdbcTemplate.update("")
+
+/*
         jdbcTemplate.update("DELETE FROM book_genre WHERE book_id = ? ", id);
         jdbcTemplate.update("DELETE FROM author_book WHERE book_id = ? ", id);
         insertIntoBookGenre(id, book.getGenres());
@@ -48,16 +53,6 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
 
         //return null;
         return Optional.empty();
-    }
-
-    public Optional<Delivery> read(Long id) {
-        return Optional.ofNullable(jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id', delivery.courier_id, " +
-                        "delivery.courier_telephone_number,\n" +
-                        "delivery.description_for_status, delivery_status.courier_delivery_status AS 'delivery_status'\n" +
-                        "FROM delivery LEFT JOIN delivery_status ON delivery.delivery_status_id = delivery_status.id WHERE delivery.id = ?"),
-                preparedStatement -> preparedStatement.setLong(1, id),
-                deliveryExtractor));
     }
 
     @Override
@@ -70,13 +65,29 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
 
     }
 
+    public Optional<Delivery> read(Long id) {
+        return Optional.ofNullable(jdbcTemplate.query(
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id',delivery.request_id, delivery.courier_id, \n" +
+                        "delivery.courier_telephone_number, delivery.description_for_status, \n" +
+                        "delivery_status.courier_delivery_status AS 'delivery_status',\n" +
+                        "delivery_item.book_id, delivery_item.price, delivery_item.quantity, delivery_item.book_title \n" +
+                        "FROM delivery LEFT JOIN delivery_status ON delivery.delivery_status_id \n" +
+                        "= delivery_status.id \n" +
+                        "LEFT JOIN delivery_item ON delivery.id = delivery_item.delivery_id\n" +
+                        "WHERE delivery.id = ?"),
+                preparedStatement -> preparedStatement.setLong(1, id),
+                deliveryExtractor));
+    }
+
     @Override
     public List<Delivery> readAll() {
         return jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id', delivery.courier_id, " +
-                        "delivery.courier_telephone_number, delivery.description_for_status, " +
-                        "delivery_status.courier_delivery_status AS 'delivery_status' FROM delivery " +
-                        "LEFT JOIN delivery_status ON delivery.delivery_status_id = delivery_status.id"),
+                new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id', delivery.request_id, delivery.courier_id, \n" +
+                        "delivery.courier_telephone_number, delivery.description_for_status, \n" +
+                        "delivery_status.courier_delivery_status AS 'delivery_status', delivery_item.book_id,\n" +
+                        "delivery_item.price, delivery_item.quantity, delivery_item.book_title FROM delivery\n" +
+                        "LEFT JOIN delivery_status ON delivery.delivery_status_id = delivery_status.id\n" +
+                        "LEFT JOIN delivery_item ON delivery.id = delivery_item.delivery_id"),
                 readDeliveriesExtractor);
     }
 }

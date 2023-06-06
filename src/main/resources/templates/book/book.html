@@ -9,6 +9,7 @@
     <div class="header">
         <nav th:replace="~{fragment::navbar}"></nav>
     </div>
+
     <div class="content container">
         <div class="book" th:if="${!book.getHidden() || (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
             <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN') && book.getHidden()}" class="text-danger fs-3">
