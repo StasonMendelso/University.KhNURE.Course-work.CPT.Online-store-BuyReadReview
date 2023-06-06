@@ -52,7 +52,10 @@ public class BookController {
 
     @GetMapping
     public String viewBooks(Model model) {
-        model.addAttribute("bookList", bookService.getAllBooks().stream().map(bookReadMapper::map).toList());
+        model.addAttribute("bookList", bookService.getAllBooks()
+                .stream()
+                .map(bookReadMapper::map)
+                .toList());
         return "book/books";
     }
 
