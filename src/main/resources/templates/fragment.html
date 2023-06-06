@@ -3,6 +3,9 @@
 <head th:fragment="main-head-data">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!--    <meta th:name="_csrf" th:content="${_csrf.token}"/>-->
+<!--    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <meta name="context-path" th:content="${#ctx.getVariable('context-path')}">
     <title>BuyReadReview Online Store</title>
     <link th:href="@{/assets/image/icons/logo.jpg}" rel="icon"/>
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
@@ -201,12 +204,15 @@
     <div class="d-flex flex-column">
         <div class="d-flex flex-row justify-content-start align-items-center">
             <span>Кількість товарів:</span>
-            <span>0</span>
+            <span th:text="${session.get('cart').getCartItemsNumber()}" id="cartItemsCount">items count</span>
         </div>
 
         <div class="d-flex flex-row justify-content-start">
             <span>Сума:</span>
-            <span>0</span>
+            <span  id="cartTotal">
+                <th:block th:if="${session.get('cart').getTotal()==0}" th:text="${'0 грн'}"></th:block>
+                <th:block th:if="${session.get('cart').getTotal()>0}" th:text="${#numbers.formatDecimal(session.get('cart').getTotal(),0,2) + ' грн'}"></th:block>
+            </span>
         </div>
     </div>
 </div>
@@ -224,6 +230,7 @@
         <div class="card-body mt-auto" th:classappend="${book.getHidden()? 'opacity-75' : ''}">
             <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
             <p class="card-text" th:text="${book.getPrice()}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
             <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
             <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
         </div>
@@ -234,8 +241,10 @@
         <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
         <div class="card-body mt-auto">
             <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
-            <p class="card-text" th:text="${book.getPrice()}"></p>
-            <a href="#" class="btn btn-primary">Додати в корзину</a>
+            <p class="card-text" th:text="${#numbers.formatDecimal(book.getPrice(),0,2) + ' грн'}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
+            <input hidden="hidden" name="bookId" th:value="${book.getId()}">
+            <button class="btn btn-primary _addItemToCartButton">Додати в корзину</button>
         </div>
     </div>
     <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
