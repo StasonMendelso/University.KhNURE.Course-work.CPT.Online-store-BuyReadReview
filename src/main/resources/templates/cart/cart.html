@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/cart/manageCart.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="main">
+        <div class="content container">
+            <div class="h3">Кошик</div>
+            <th:block th:if="${cart!=null && !cart.isEmpty()}">
+                <div class="cart">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-start text-uppercase fw-bold fs-5">Товар</td>
+                                <td class="text-start text-uppercase fw-bold fs-5">Артикул</td>
+                                <td class="text-start text-uppercase fw-bold fs-5">Ціна</td>
+                                <td class="text-center text-uppercase fw-bold fs-5">Кількість</td>
+                                <td class="text-end text-uppercase fw-bold fs-5">Проміжний підсумок</td>
+                            </tr>
+                            </thead>
+                            <tbody class="cart-tbody">
+                            <th:block th:each="cartItem : ${cart.getCartItems()}">
+                                <tr class="align-middle cart-item-row">
+                                    <td class="align-middle text-center">
+                                        <input hidden="hidden" name="bookId" th:value="${cartItem.book.id}">
+                                        <button type="button" class="btn-close _removeItemFromCartButton" aria-label="Close"></button>
+                                    </td>
+                                    <td class="cart-item-picture">
+                                        <img th:src="@{/file/book/{file_id}(file_id=${cartItem.book.getFiles().stream().findFirst().get().getId()})}"
+                                             class="card-img-top" alt="item-photo"/>
+                                    </td>
+                                    <td class="text-start">
+                                        <a th:text="${cartItem.book.getTitle()}"
+                                           th:href="@{/book/{id}(id=${cartItem.book.getId()})}"
+                                           class="text-decoration-none">Товар</a>
+                                    </td>
+                                    <td th:text="${cartItem.book.getArticle()}" class="text-start">Артикул</td>
+                                    <td th:text="${#numbers.formatDecimal(cartItem.book.getPrice(),0,2)} + ' грн'" class="text-start">Ціна</td>
+                                    <td class="text-center">
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <input hidden="hidden" name="bookId" th:value="${cartItem.book.id}">
+                                            <button class="btn btn-outline-secondary decrementItemQuantityButton">-</button>
+                                            <input class="form-control cart-item-quantity-input text-center" type="number" min="1" name="item-quantity" th:value="${cartItem.getQuantity()}">
+                                            <button class="btn btn-outline-secondary incrementItemQuantityButton">+</button>
+                                        </div>
+
+                                    </td>
+                                    <td th:text="${#numbers.formatDecimal(cartItem.getTotal(),0,2) + ' грн'}" class="text-end text-success fw-bolder">Проміжний підсумок</td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="p-2 border border-1 shadow-sm">
+                        <div class="text-uppercase h4">Підсумки кошика</div>
+                        <hr>
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="text-black fs-4">Загалом</div>
+                            <div th:text="${#numbers.formatDecimal(cart.getTotal(),0,2)+' грн'}" class="text-success fw-bolder cart-total-sum">Total sum</div>
+                        </div>
+                        <div class="w-100 btn btn-success">
+                            <a th:href="@{/cart/checkout}" class="text-uppercase text-decoration-none text-white fw-bold">Перейти
+                                до оформлення</a>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:if="${cart==null || cart.isEmpty()}">
+                Кошик порожній, перейдіть до каталогу, щоб додати товари
+            </th:block>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
