@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/cart/addItemToCart.js}"></script>
 </head>
 <body>
 <div class="wrapper d-flex flex-column min-vh-100">
@@ -41,36 +42,41 @@
                 ISBN: <span th:text="${book.getIsbn()}">isbn</span>
             </div>
             <div>
-                Title: <span th:text="${book.getTitle()}">title</span>
+                Назва: <span th:text="${book.getTitle()}">title</span>
             </div>
             <div>
-                Papers: <span th:text="${book.getPaperQuantity()}">paperQuantity</span>
+                Кількість сторінок: <span th:text="${book.getPaperQuantity()}">paperQuantity</span>
             </div>
             <div>
-                Description: <span th:text="${book.getDescription()}">description</span>
+                Опис: <div th:text="${book.getDescription()}">description</div>
             </div>
             <div>
-                Price: <span th:text="${book.getPrice()}">price</span>
+                Ціна: <span th:text="${book.getPrice() + ' грн'}">price</span>
             </div>
             <div>
-                Quantity: <span th:text="${book.getQuantity()}">quantity</span>
+                Кількість: <span th:text="${book.getQuantity()}">quantity</span>
             </div>
             <div>
-                Article: <span th:text="${book.getArticle()}">article</span>
+                Артикул: <span th:text="${book.getArticle()}">article</span>
             </div>
             <div>
-                Publisher: <span th:text="${book.getPublisher().getName()}">publisher name</span>
+                Видавництво: <span th:text="${book.getPublisher().getName()}">publisher name</span>
             </div>
             <div>
-                Author(-s):
+                Автор(-и):
                 <span th:each="author, iStats : ${book.getAuthors()}" th:object="${author}" th:text="${iStats.last ? author.getFirstName() + ' ' + author.getLastName() :author.getFirstName() + ' ' + author.getLastName() + ', '}">author</span>
             </div>
             <div>
-                Genre(-s):
+                Жанр(-и):
                 <span th:each="genre, iStats: ${book.getGenres()}" th:object="${genre}" th:text="${iStats.last ? genre.getName() : genre.getName() + ', '}">genre</span>
             </div>
             <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
                 <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
+            </div>
+            <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' }">
+                <input hidden="hidden" name="bookId" th:value="${book.getId()}">
+                <button class="btn btn-primary _addItemToCartButton">Додати в корзину</button>
             </div>
         </div>
         <div th:if="${book.getHidden() && (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
