@@ -41,6 +41,7 @@ public class OrderReadMapper implements Mapper<Order, ReadOrderDto> {
                 .orderStatus(order.getOrderStatus().getName())
                 .buyerContact(contactReadMapper.map(order.getBuyerContact()))
                 .receiverContact(contactReadMapper.map(order.getReceiverContact()))
+                .createAt(order.getCreatedAt())
                 .description(order.getDescription())
                 .id(order.getId())
                 .orderItemsList(order.getOrderItems()

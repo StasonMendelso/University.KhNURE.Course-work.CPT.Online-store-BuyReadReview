@@ -55,7 +55,7 @@ public class OrderExtractor implements ResultSetExtractor<Order> {
         do {
             if (!order.getId().equals(resultSet.getLong("order_id"))) {
                 resultSet.previous();
-                continue;
+                break;
             }
             OrderItem orderItem = orderItemRowMapper.mapRow(resultSet, resultSet.getRow());
             Book book = Book.builder()

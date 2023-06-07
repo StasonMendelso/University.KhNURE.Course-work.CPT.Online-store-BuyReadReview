@@ -33,10 +33,10 @@ public class OrderController {
 
     @GetMapping
     public String getAllOrders(Model model) {
-//        model.addAttribute("orderList",orderService.getAllOrders()
-//                .stream()
-//                .map()
-//                .toList());
+        model.addAttribute("orderList",orderService.getAllOrders()
+                .stream()
+                .map(orderReadMapper::map)
+                .toList());
         return "order/orders";
     }
 

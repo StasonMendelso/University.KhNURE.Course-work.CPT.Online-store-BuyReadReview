@@ -121,6 +121,34 @@
         </ul>
     </div>
 </div>
+<div class="container" th:fragment="navbar_MANAGER">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: MANAGER</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orders}">Замовлення</a>
+            </li>
+        </ul>
+        <!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
+        </ul>
+    </div>
+</div>
+
 <div class="container" th:fragment="navbar_COURIER">
     <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
         <div class="logo-container">
@@ -192,7 +220,8 @@
                             #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )
                                  && !book.getHidden()) ||
                                  #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN' ||
-                                      #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
+                                      #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'
+                                      ||#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER'}">
     <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN'}">
         <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
              class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}" alt="...">
@@ -203,6 +232,18 @@
             <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
             <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
             <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
+        </div>
+    </div>
+    <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                   #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'} ">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}" alt="...">
+        <div class="card-body mt-auto" th:classappend="${book.getHidden()? 'opacity-75' : ''}">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
+            <p class="card-text" th:text="${#numbers.formatDecimal(book.getPrice(),0,2) + ' грн'}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
+            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
         </div>
     </div>
     <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
