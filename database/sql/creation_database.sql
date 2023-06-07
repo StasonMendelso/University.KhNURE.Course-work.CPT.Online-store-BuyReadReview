@@ -213,7 +213,7 @@ CREATE TABLE book_review_final
 
 CREATE TABLE book_review_request_for_checking
 (
-    `comment`             VARCHAR(300) NOT NULL
+    `comment`             VARCHAR(300)  NULL
         CONSTRAINT  book_review_request_for_checking_comment CHECK (`comment` != "" ),
     book_review_request_for_checking_status_id  BIGINT NOT NULL,
     editor_id             BIGINT NULL,
