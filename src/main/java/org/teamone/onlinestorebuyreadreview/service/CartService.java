@@ -10,6 +10,8 @@ import org.teamone.onlinestorebuyreadreview.database.repository.CartRepository;
 import org.teamone.onlinestorebuyreadreview.dto.cart.BookIdAndQuantityDto;
 import org.teamone.onlinestorebuyreadreview.service.exception.BookNotFoundException;
 
+import java.util.Optional;
+
 /**
  * @author Stanislav Hlova
  */
@@ -29,11 +31,13 @@ public class CartService {
         return cart;
     }
 
+    @Transactional
     public Cart getCartByClientId(Long id) {
-        //TODO: 07.06.2023 IMPLEMENT
-        throw new UnsupportedOperationException();
+        Optional<Cart> optionalCart = cartRepository.read(id);
+        return optionalCart.orElseGet(() -> cartRepository.create(Cart.builder()
+                .id(id)
+                .build()).get());
     }
-
     public Cart removeItem(Cart cart, Long bookId) {
         cart.removeItemByBookId(bookId);
         return cart;
@@ -42,5 +46,9 @@ public class CartService {
     public Cart updateItemQuantity(Cart cart, BookIdAndQuantityDto bookIdAndQuantityDto) {
         cart.updateItemQuantityByBookId(Long.parseLong(bookIdAndQuantityDto.getBookId()), Integer.parseInt(bookIdAndQuantityDto.getQuantity()));
         return cart;
+    }
+
+    public void updateCart(Cart cart) {
+        cartRepository.update(cart.getId(),cart);
     }
 }
