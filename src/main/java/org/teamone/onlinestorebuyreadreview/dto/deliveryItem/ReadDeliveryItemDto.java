@@ -1,19 +1,19 @@
-package org.teamone.onlinestorebuyreadreview.database.entity;
+package org.teamone.onlinestorebuyreadreview.dto.deliveryItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
 /**
  * @author Starukhina Anastasiia
  */
 @Data
 @AllArgsConstructor
 @Builder
-public class DeliveryItem {
+public class ReadDeliveryItemDto {
     private Long bookId;
-    private Long isbn;
     private Long deliveryId;
     private BigDecimal price;
     private int quantity;

@@ -18,20 +18,15 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class DeliveryExtractor implements ResultSetExtractor<Delivery> {
+    private final DeliveryRowMapper deliveryRowMapper;
     private final DeliveryItemRowMapper deliveryItemRowMapper;
     @Override
     public Delivery extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         if (!resultSet.next()) {
             return null;
         }
-        Delivery delivery = Delivery.builder()
-                .id(resultSet.getLong("delivery_id"))
-                .requestId(resultSet.getLong("request_id"))
-                .courierId(resultSet.getLong("courier_id"))
-                .courierTelephoneNumber(resultSet.getString("courier_telephone_number"))
-                .descriptionForStatus(resultSet.getString("description_for_status"))
-                .deliveryStatus(DeliveryStatus.getInstance(resultSet.getString("delivery_status")))
-                .build();
+        Delivery delivery = deliveryRowMapper.mapRow(resultSet, resultSet.getRow());
+
         Set<DeliveryItem> deliveryItems = new HashSet<>();
         do {
             if(!delivery.getId().equals(resultSet.getLong("delivery_id"))){

@@ -39,7 +39,7 @@ public class DeliveryItemRepository implements CrudRepository<Long, DeliveryItem
 
     @Override
     public void delete(Long id) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -48,7 +48,9 @@ public class DeliveryItemRepository implements CrudRepository<Long, DeliveryItem
                 "book_title FROM delivery_item ORDER BY delivery_id", deliveryItemRowMapper);
     }
 
-    public List<DeliveryItem> readAllByDeliveryId(List<Long> idList) {
-        return null;
+    public List<DeliveryItem> readAllByDeliveryId(Long deliveryId) {
+        return jdbcTemplate.query("SELECT book_id, delivery_id, price, quantity,"+
+                "book_title FROM delivery_item ORDER BY delivery_id"+
+                "WHERE delivery_id = ?", deliveryItemRowMapper, deliveryId);
     }
 }

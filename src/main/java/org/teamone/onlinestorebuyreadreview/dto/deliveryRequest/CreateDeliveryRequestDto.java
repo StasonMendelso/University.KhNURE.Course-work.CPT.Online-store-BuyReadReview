@@ -1,6 +1,5 @@
-package org.teamone.onlinestorebuyreadreview.dto.deliveryrequest;
+package org.teamone.onlinestorebuyreadreview.dto.deliveryRequest;
 
-import jakarta.validation.constraints.Pattern;
 import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryRequestStatus;
 
 import java.time.LocalDate;

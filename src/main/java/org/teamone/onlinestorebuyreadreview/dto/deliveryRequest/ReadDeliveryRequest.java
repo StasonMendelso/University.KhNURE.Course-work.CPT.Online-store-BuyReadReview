@@ -1,4 +1,4 @@
-package org.teamone.onlinestorebuyreadreview.dto.deliveryrequest;
+package org.teamone.onlinestorebuyreadreview.dto.deliveryRequest;
 
 /**
  * @author Starukhina Anastasiia
