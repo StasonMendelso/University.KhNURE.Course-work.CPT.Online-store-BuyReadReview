@@ -64,11 +64,11 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
     public void delete(Long id) {
 
     }
-
+    @Override
     public Optional<Delivery> read(Long id) {
         return Optional.ofNullable(jdbcTemplate.query(
                 new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id',delivery.request_id, delivery.courier_id, \n" +
-                        "delivery.courier_telephone_number, delivery.description_for_status, \n" +
+                        "delivery.creation_date, delivery.courier_telephone_number, delivery.description_for_status, \n" +
                         "delivery_status.courier_delivery_status AS 'delivery_status',\n" +
                         "delivery_item.book_id, delivery_item.price, delivery_item.quantity, delivery_item.book_title \n" +
                         "FROM delivery LEFT JOIN delivery_status ON delivery.delivery_status_id \n" +
@@ -83,7 +83,7 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
     public List<Delivery> readAll() {
         return jdbcTemplate.query(
                 new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id', delivery.request_id, delivery.courier_id, \n" +
-                        "delivery.courier_telephone_number, delivery.description_for_status, \n" +
+                        "delivery.creation_date, delivery.courier_telephone_number, delivery.description_for_status, \n" +
                         "delivery_status.courier_delivery_status AS 'delivery_status', delivery_item.book_id,\n" +
                         "delivery_item.price, delivery_item.quantity, delivery_item.book_title FROM delivery\n" +
                         "LEFT JOIN delivery_status ON delivery.delivery_status_id = delivery_status.id\n" +

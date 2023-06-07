@@ -12,6 +12,14 @@ import java.sql.SQLException;
 /**
  * @author Starukhina Anastasiia
  */
+/*    private Long id;
+    private Long requestId;
+    private Long courierId;
+    private LocalDate creationDate;
+    private DeliveryStatus deliveryStatus;
+    private String descriptionForStatus;
+    private String courierTelephoneNumber;
+    private List<DeliveryItem> deliveryItems;*/
 @Component
 @RequiredArgsConstructor
 public class DeliveryRowMapper implements RowMapper<Delivery> {
@@ -22,6 +30,7 @@ public class DeliveryRowMapper implements RowMapper<Delivery> {
                 .id(resultSet.getLong("delivery_id"))
                 .requestId((resultSet.getLong("request_id")))
                 .courierId(resultSet.getLong("courier_id"))
+                .creationDate(resultSet.getDate("creation_date").toLocalDate())
                 .courierTelephoneNumber(resultSet.getString("courier_telephone_number"))
                 .descriptionForStatus(resultSet.getString("description_for_status"))
                 .deliveryStatus(DeliveryStatus.getInstance(resultSet.getString("delivery_status")))

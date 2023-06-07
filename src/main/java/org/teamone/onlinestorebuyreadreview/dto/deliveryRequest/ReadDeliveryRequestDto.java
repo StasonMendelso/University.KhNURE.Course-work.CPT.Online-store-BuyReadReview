@@ -1,9 +1,10 @@
-package org.teamone.onlinestorebuyreadreview.database.entity;
+package org.teamone.onlinestorebuyreadreview.dto.deliveryRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryRequestStatus;
 
 import java.time.LocalDate;
 
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeliveryRequest {
+public class ReadDeliveryRequestDto {
     private Long id;
     private Long managerId;
     private String manager_first_name;
