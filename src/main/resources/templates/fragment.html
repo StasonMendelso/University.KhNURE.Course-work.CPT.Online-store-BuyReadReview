@@ -3,8 +3,8 @@
 <head th:fragment="main-head-data">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<!--    <meta th:name="_csrf" th:content="${_csrf.token}"/>-->
-<!--    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <!--    <meta th:name="_csrf" th:content="${_csrf.token}"/>-->
+    <!--    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>-->
     <meta name="context-path" th:content="${#ctx.getVariable('context-path')}">
     <title>BuyReadReview Online Store</title>
     <link th:href="@{/assets/image/icons/logo.jpg}" rel="icon"/>
@@ -44,26 +44,21 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: GUEST</span>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/books}">Каталог</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
                 <div th:replace="~{fragment::navbar-cart-element}">
                     Cart
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/login}">Увійти</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/register}">Зареєструватися</a>
-            </li>
+            <li th:replace="~{fragment::navbar-unauthenticated}"></li>
         </ul>
     </div>
 </div>
@@ -78,7 +73,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: CLIENT</span>
             <li class="nav-item">
@@ -88,16 +83,14 @@
                 <a class="nav-link" th:href="@{/cabinet/orders}">Замовлення</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
                 <div th:replace="~{fragment::navbar-cart-element}">
                     Cart
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Вийти</a>
-            </li>
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
         </ul>
     </div>
 </div>
@@ -112,7 +105,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: ADMIN</span>
             <li class="nav-item">
@@ -122,11 +115,9 @@
                 <a class="nav-link" th:href="@{/books/new}">Додати книгу</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Вийти</a>
-            </li>
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
         </ul>
     </div>
 </div>
@@ -141,7 +132,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: COURIER</span>
             <li class="nav-item">
@@ -186,19 +177,16 @@
                 <a class="nav-link" th:href="@{/deliveryRequests}">Заявки на доставку</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/logout}">Вийти</a>
-            </li>
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
         </ul>
     </div>
 </div>
-<form th:fragment="navbar-search-form" class="d-flex me-auto align-self-center" role="search">
-    <input class="form-control me-2" type="search" placeholder="Знайти книгу за назвою" aria-label="Search">
-    <button class="btn btn-outline-success" type="submit">Пошук</button>
-</form>
-
+<!--<form th:fragment="navbar-search-form" class="d-flex me-auto align-self-center" role="search">-->
+<!--    <input class="form-control me-2" type="search" placeholder="Знайти книгу за назвою" aria-label="Search">-->
+<!--    <button class="btn btn-outline-success" type="submit">Пошук</button>-->
+<!--</form>-->
 <div th:fragment="navbar-cart-element" class="d-flex flex-row">
     <a class="nav-link" th:href="@{/cart}">Корзина</a>
     <div class="d-flex flex-column">
@@ -209,16 +197,35 @@
 
         <div class="d-flex flex-row justify-content-start">
             <span>Сума:</span>
-            <span  id="cartTotal">
+            <span id="cartTotal">
                 <th:block th:if="${session.get('cart').getTotal()==0}" th:text="${'0 грн'}"></th:block>
-                <th:block th:if="${session.get('cart').getTotal()>0}" th:text="${#numbers.formatDecimal(session.get('cart').getTotal(),0,2) + ' грн'}"></th:block>
+                <th:block th:if="${session.get('cart').getTotal()>0}"
+                          th:text="${#numbers.formatDecimal(session.get('cart').getTotal(),0,2) + ' грн'}"></th:block>
             </span>
         </div>
     </div>
 </div>
+<th:block th:fragment="navbar-authenticated" class="navbar-nav mb-2 mb-lg-0">
+    <li class="nav-item">
+        <span th:text="${#authentication.principal.user.getLastName() + ' ' +
+        #authentication.principal.user.getFirstName() + ' ' +
+        #authentication.principal.user.getMiddleName()}"></span>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/logout}">Вийти</a>
+    </li>
+</th:block>
 
+<th:block th:fragment="navbar-unauthenticated">
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/login}">Увійти</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/register}">Зареєструватися</a>
+    </li>
+</th:block>
 <div th:fragment="bookRow(bookList)"
-        th:each="book : ${bookList}" class="card book-card " style="width: 18rem;"
+     th:each="book : ${bookList}" class="card book-card " style="width: 18rem;"
      th:if="${((#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
                             #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )
                                  && !book.getHidden()) ||
@@ -226,9 +233,11 @@
                                       #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER' ||
                                                 #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER'}">
     <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN'}">
-        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}"alt="...">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}" alt="...">
         <div class="card-body mt-auto" th:classappend="${book.getHidden()? 'opacity-75' : ''}">
-            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
             <p class="card-text" th:text="${book.getPrice()}"></p>
             <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
             <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
@@ -238,9 +247,11 @@
     <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
                             #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )
                                  && !book.getHidden()}">
-        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" alt="...">
         <div class="card-body mt-auto">
-            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
             <p class="card-text" th:text="${#numbers.formatDecimal(book.getPrice(),0,2) + ' грн'}"></p>
             <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
             <input hidden="hidden" name="bookId" th:value="${book.getId()}">
@@ -248,9 +259,11 @@
         </div>
     </div>
     <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
-        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" alt="...">
         <div class="card-body mt-auto">
-            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
             <p class="card-text" th:text="${book.getPrice()}"></p>
             <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
         </div>
