@@ -38,9 +38,6 @@ public class CartService {
                 .id(id)
                 .build()).get());
     }
-    public Cart readFromRepository(Long id){
-        return getCartByClientId(id);
-    }
     public Cart removeItem(Cart cart, Long bookId) {
         cart.removeItemByBookId(bookId);
         return cart;
@@ -49,5 +46,9 @@ public class CartService {
     public Cart updateItemQuantity(Cart cart, BookIdAndQuantityDto bookIdAndQuantityDto) {
         cart.updateItemQuantityByBookId(Long.parseLong(bookIdAndQuantityDto.getBookId()), Integer.parseInt(bookIdAndQuantityDto.getQuantity()));
         return cart;
+    }
+
+    public void updateCart(Cart cart) {
+        cartRepository.update(cart.getId(),cart);
     }
 }

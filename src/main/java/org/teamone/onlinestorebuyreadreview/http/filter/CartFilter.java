@@ -31,23 +31,25 @@ public class CartFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpSession httpSession = httpServletRequest.getSession();
         Cart cart = (Cart) httpSession.getAttribute(SessionConstant.CART);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Role currentRole = securityContext.getAuthentication().getAuthorities()
+                .stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .map(Role::getInstance)
+                .orElseThrow(() -> new RuntimeException("No role was defined. Please, define a role before this filter."));
 
         if(cart == null){
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            Role currentRole = securityContext.getAuthentication().getAuthorities()
-                    .stream()
-                    .findFirst()
-                    .map(GrantedAuthority::getAuthority)
-                    .map(Role::getInstance)
-                    .orElseThrow(() -> new RuntimeException("No role was defined. Please, define a role before this filter."));
             if(currentRole.equals(Role.GUEST)){
                 httpSession.setAttribute(SessionConstant.CART,new Cart());
             }
-            if(currentRole.equals(Role.CLIENT)){
-                AuthUserDetails authUserDetails = (AuthUserDetails) securityContext.getAuthentication().getPrincipal();
-                Client client = (Client) authUserDetails.getUser();
+        }
+        if(currentRole.equals(Role.CLIENT)){
+            AuthUserDetails authUserDetails = (AuthUserDetails) securityContext.getAuthentication().getPrincipal();
+            Client client = (Client) authUserDetails.getUser();
+            try {
                 httpSession.setAttribute(SessionConstant.CART,cartService.getCartByClientId(client.getId()));
-            }
+            }catch (IllegalStateException ignored){}
         }
         chain.doFilter(request,response);
     }

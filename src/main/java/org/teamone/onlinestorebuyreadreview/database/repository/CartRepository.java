@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import org.teamone.onlinestorebuyreadreview.database.entity.Cart;
 import org.teamone.onlinestorebuyreadreview.database.mapper.cart.CartExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.BatchPreparedStatementSetterWithBatchSize;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +47,8 @@ public class CartRepository implements CrudRepository<Long, Cart> {
                                                                                                        "JOIN cart_item ON cart.id = cart_item.cart_id " +
                                                                                                        "JOIN book ON book.id = cart_item.book_id " +
                                                                                                        "LEFT JOIN book_file ON book.id = book_file.book_id " +
-                                                                                                       "WHERE cart.id = ?"),
+                                                                                                       "WHERE cart.id = ? " +
+                                                                                                       "ORDER BY cart_item.book_id"),
                 preparedStatement -> preparedStatement.setLong(1, id),
                 cartExtractor)).or(() -> Optional.of(Cart.builder().id(id).build()));
 
@@ -53,14 +56,22 @@ public class CartRepository implements CrudRepository<Long, Cart> {
 
     @Override
     public Optional<Cart> update(Long id, Cart entity) {
-        throw new UnsupportedOperationException();
-
+        jdbcTemplate.update("DELETE FROM cart_item WHERE cart_id=?", entity.getId());
+        jdbcTemplate.batchUpdate("INSERT INTO cart_item(cart_id, book_id,quantity) VALUE(?,?,?)", new BatchPreparedStatementSetterWithBatchSize(entity.getCartItems().size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++,id);
+                preparedStatement.setLong(index++,entity.getCartItems().get(i).getBook().getId());
+                preparedStatement.setInt(index,entity.getCartItems().get(i).getQuantity());
+            }
+        });
+        return read(id);
     }
 
     @Override
     public void delete(Long id) {
-        throw new UnsupportedOperationException();
-
+        jdbcTemplate.update("DELETE FROM cart_item WHERE cart_id=?", id);
     }
 
     @Override

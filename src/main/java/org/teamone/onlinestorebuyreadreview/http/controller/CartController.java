@@ -47,20 +47,19 @@ public class CartController {
     public String showCart(Model model,
                            Cart cart,
                            Authentication authentication) {
-        User user = ((AuthUserDetails) authentication.getPrincipal()).getUser();
-        if (user.getRole().equals(Role.CLIENT)) {
-            cart = cartService.getCartByClientId(user.getId());
-        }
+        cart = getClientCart(cart, authentication);
         model.addAttribute("cart", cart);
 
         return "cart/cart";
     }
 
+
     @ResponseBody
     @PostMapping
     public ResponseEntity<?> addCartItem(Cart cart,
                                          @RequestBody @Validated BookIdDto bookIdDto,
-                                         BindingResult bindingResult) {
+                                         BindingResult bindingResult,
+                                         Authentication authentication) {
         if (bindingResult.hasErrors()) {
             throw new ApiErrorException(HttpStatus.BAD_REQUEST, "Validation errors", apiValidationExceptionMapper.map(bindingResult)
                     .stream()
@@ -68,7 +67,7 @@ public class CartController {
                     .toList());
         }
         cart = cartService.putItem(cart, Long.valueOf(bookIdDto.getBookId()));
-
+        cart = updateAndGetCart(cart, authentication);
         return ResponseEntity.ok(cartTotalAndQuantityMapper.map(cart));
     }
 
@@ -76,7 +75,8 @@ public class CartController {
     @DeleteMapping
     public ResponseEntity<?> deleteCartItem(Cart cart,
                                             @RequestBody @Validated BookIdDto bookIdDto,
-                                            BindingResult bindingResult) {
+                                            BindingResult bindingResult,
+                                            Authentication authentication) {
         if (bindingResult.hasErrors()) {
             throw new ApiErrorException(HttpStatus.BAD_REQUEST, "Validation errors", apiValidationExceptionMapper.map(bindingResult)
                     .stream()
@@ -84,6 +84,7 @@ public class CartController {
                     .toList());
         }
         cart = cartService.removeItem(cart, Long.valueOf(bookIdDto.getBookId()));
+        cart = updateAndGetCart(cart, authentication);
 
         return ResponseEntity.ok(cartMapper.map(cart));
     }
@@ -92,7 +93,8 @@ public class CartController {
     @PutMapping
     public ResponseEntity<?> updateCartItemQuantity(Cart cart,
                                                     @RequestBody @Validated BookIdAndQuantityDto bookIdAndQuantityDto,
-                                                    BindingResult bindingResult) {
+                                                    BindingResult bindingResult,
+                                                    Authentication authentication) {
         if (bindingResult.hasErrors()) {
             throw new ApiErrorException(HttpStatus.BAD_REQUEST, "Validation errors", apiValidationExceptionMapper.map(bindingResult)
                     .stream()
@@ -100,7 +102,28 @@ public class CartController {
                     .toList());
         }
         cart = cartService.updateItemQuantity(cart, bookIdAndQuantityDto);
-
+        cart = updateAndGetCart(cart, authentication);
         return ResponseEntity.ok(cartMapper.map(cart));
+    }
+
+    private Cart updateAndGetCart(Cart cart, Authentication authentication) {
+        if (authentication.getPrincipal().getClass().equals(AuthUserDetails.class)) {
+            User user = ((AuthUserDetails) authentication.getPrincipal()).getUser();
+            if (user.getRole().equals(Role.CLIENT)) {
+                cartService.updateCart(cart);
+                cart = cartService.getCartByClientId(user.getId());
+            }
+        }
+        return cart;
+    }
+
+    private Cart getClientCart(Cart cart, Authentication authentication) {
+        if (authentication.getPrincipal().getClass().equals(AuthUserDetails.class)) {
+            User user = ((AuthUserDetails) authentication.getPrincipal()).getUser();
+            if (user.getRole().equals(Role.CLIENT)) {
+                cart = cartService.getCartByClientId(user.getId());
+            }
+        }
+        return cart;
     }
 }

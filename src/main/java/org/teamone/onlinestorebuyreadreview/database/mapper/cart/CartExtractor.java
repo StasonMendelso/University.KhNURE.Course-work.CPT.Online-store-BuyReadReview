@@ -1,6 +1,5 @@
 package org.teamone.onlinestorebuyreadreview.database.mapper.cart;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
@@ -12,9 +11,11 @@ import org.teamone.onlinestorebuyreadreview.database.entity.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Stanislav Hlova
@@ -56,7 +57,10 @@ public class CartExtractor implements ResultSetExtractor<Cart> {
 
         } while (resultSet.next());
 
-        cart.setCartItems(cartItemSet.stream().toList());
+        cart.setCartItems(cartItemSet
+                .stream()
+                .sorted(Comparator.comparing(o -> o.getBook().getId()))
+                .collect(Collectors.toCollection(ArrayList::new)));
 
         return cart;
     }
