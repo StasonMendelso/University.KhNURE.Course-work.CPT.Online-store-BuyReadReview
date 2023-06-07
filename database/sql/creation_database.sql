@@ -89,7 +89,7 @@ CREATE TABLE book
     hidden                boolean NOT NULL DEFAULT 0,
     price                 DECIMAL(30,8) NOT NULL DEFAULT 0
         CONSTRAINT  book_price CHECK (price >=0),
-    quantity              FLOAT NOT NULL DEFAULT 0
+    quantity              INTEGER NOT NULL DEFAULT 0
         CONSTRAINT  book_quantity CHECK (quantity >=0),
     article               VARCHAR(25) NOT NULL
         CONSTRAINT  book_article CHECK (article != ""),
