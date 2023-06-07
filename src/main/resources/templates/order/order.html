@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/order/updateOrderStatus.js}"></script>
+    <script th:src="@{/assets/js/order/updateOrderStatusDescription.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="order">
+            <input hidden name="orderId" th:value="${orderDetails.getId()}">
+            <h3>Замовлення #<span th:text="${orderDetails.getId()}"></span></h3>
+            <div class="order-items">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td></td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Товар</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Артикул</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Ціна</td>
+                            <td class="text-center text-uppercase fw-bold fs-5">Кількість</td>
+                            <td class="text-end text-uppercase fw-bold fs-5">Проміжний підсумок</td>
+                        </tr>
+                        </thead>
+                        <tbody class="cart-tbody">
+                        <th:block th:each="orderItem : ${orderDetails.getOrderItemsList()}">
+                            <tr class="align-middle cart-item-row">
+                                <td class="cart-item-picture">
+                                    <img th:src="@{/file/book/{file_id}(file_id=${orderItem.getFileId()})}"
+                                         class="card-img-top" alt="item-photo"/>
+                                </td>
+                                <td class="text-start">
+                                    <a th:text="${orderItem.getTitle()}"
+                                       th:href="@{/books/{id}(id=${orderItem.getBookId()})}"
+                                       class="text-decoration-none">Товар</a>
+                                </td>
+                                <td th:text="${orderItem.getArticle()}" class="text-start">Артикул</td>
+                                <td th:text="${#numbers.formatDecimal(orderItem.getPrice(),0,2)} + ' грн'"
+                                    class="text-start">Ціна
+                                </td>
+                                <td class="text-center" th:text="${orderItem.getQuantity()}"></td>
+                                <td th:text="${#numbers.formatDecimal(orderItem.getSubtotal(),0,2) + ' грн'}"
+                                    class="text-end text-success fw-bolder">Проміжний підсумок
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-2 border border-1 shadow-sm mb-2">
+                    <div class="text-uppercase h4">Підсумки замовлення</div>
+                    <hr>
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="text-black fs-4">Загалом</div>
+                        <div th:text="${#numbers.formatDecimal(orderDetails.getTotal(),0,2)+' грн'}"
+                             class="text-success fw-bolder cart-total-sum">Total sum
+                        </div>
+                    </div>
+                    <div class="used-bonuses d-flex flex-row justify-content-between">
+                        <div class="text-black fs-4">Використано бонусів:</div>
+                        <div th:text="${orderDetails.usedBonuses}" class="text-success fw-bolder"></div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between"
+                         th:if="${orderDetails.getDeliveryInfo().getClass().simpleName=='ReadCourierDeliveryDto'}">
+                        <div class="text-black fs-4">Вартість кур'єрської доставки:</div>
+                        <div th:text="${#numbers.formatDecimal(orderDetails.getDeliveryInfo().getPrice(),0,2)+' грн'}"
+                             class="text-success fw-bolder"></div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="text-black fs-4">До оплати</div>
+                        <div th:text="${#numbers.formatDecimal(orderDetails.getPaymentInfo().getTotalToPay(),0,2)+' грн'}"
+                             class="text-success fw-bolder cart-total-sum">Total to pay
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact contact-buyer">
+                <h4>Контактні дані покупця</h4>
+                <div th:replace="~{fragment::contact-data(${orderDetails.getBuyerContact()})}">
+                </div>
+            </div>
+            <div class="contact contact-receiver">
+                <h4>Контактні дані отримувача</h4>
+                <div th:replace="~{fragment::contact-data(${orderDetails.getReceiverContact()})}">
+
+                </div>
+            </div>
+            <div class="contact contact-receiver">
+                <h4>Інформація про оплату</h4>
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="text-black fw-bolder">Тип оплати:</div>
+                    <div th:text="${orderDetails.getPaymentInfo().getPaymentMethod()}"></div>
+                </div>
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="text-black fw-bolder">Статус оплати:</div>
+                    <div th:text="${orderDetails.getPaymentInfo().getPaymentStatus()}"></div>
+                </div>
+                <th:block th:switch="${orderDetails.getPaymentInfo().getPaymentType().getClass().simpleName}">
+                    <th:block th:case="ReadCardPaymentDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Рахунок отримувача: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().receiverAccountNumber}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Рахунок відправника: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().senderAccountNumber}"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:case="ReadCashPaymentDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Отримана сума: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().amountReceived}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Решта: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().change}"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:case="ReadCashOnDeliveryPaymentDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Отримана сума: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().amountReceived}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Решта: </div>
+                            <div th:text="${orderDetails.getPaymentInfo().getPaymentType().change}"></div>
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+            <div class="contact contact-receiver">
+                <h4>Інформація про доставку</h4>
+                <div class="d-flex flex-row justify-content-start">
+                    <div class="text-black fw-bolder">Тип доставки: </div>
+                    <div th:text="${orderDetails.getDeliveryMethod()}"></div>
+                </div>
+                <th:block th:switch="${orderDetails.getDeliveryInfo().getClass().simpleName}">
+                    <th:block th:case="ReadCourierDeliveryDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Адреса доставки: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().address}"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:case="ReadShopDeliveryDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Адреса магазину доставки: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().address}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Статус доставки: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().status}"></div>
+                        </div>
+                    </th:block>
+                    <th:block th:case="ReadNovaPoshtaDeliveryDto">
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Місто доставки: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().townAddress}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Номер відділення: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().departureNumber}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Номер накладної: </div>
+                            <div th:text="${orderDetails.getDeliveryInfo().invoiceNumber}"></div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+                            <div class="text-black fw-bolder">Сума доставки: </div>
+                            <div th:text="${#numbers.formatDecimal(orderDetails.getDeliveryInfo().wayBill,0,2) +' грн'}"></div>
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+            <div>
+                <h4>Статус замовлення</h4>
+                <div>
+                    <span>Статус:</span>
+                    <select class="form-select" id="orderStatus">
+                        <option th:each="orderStatusName : ${orderStatusNameList}" th:value="${orderStatusName}"
+                                th:text="${orderStatusName}"
+                                th:selected="${orderStatusName.equals(orderDetails.orderStatus)}"></option>
+                    </select>
+                    <div class="text-center">
+                        <span class="description-status _hidden">Статус був оновлений.</span>
+                    </div>
+                </div>
+                <div>
+                    <div>Опис статусу:</div>
+                    <div>
+                        <textarea th:text="${orderDetails.getDescription()}" class="w-100 form-control" id="order-description"></textarea>
+                        <button class="btn btn-primary w-100 mt-2" id="update-order-description">Оновити пояснення статусу</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
+

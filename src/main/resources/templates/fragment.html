@@ -230,6 +230,29 @@
         </div>
     </div>
 </div>
+<div th:fragment="contact-data(contact)">
+    <div>
+        <span>Прізвище:</span>
+        <span th:text="${contact.lastName}"></span>
+    </div>
+    <div>
+        <span>Ім'я:</span>
+        <span th:text="${contact.firstName}"></span>
+    </div>
+    <div>
+        <span>По-батькові:</span>
+        <span th:text="${contact.middleName}"></span>
+    </div>
+    <div>
+        <span>Телефон:</span>
+        <span th:text="${contact.telephoneNumber}"></span>
+    </div>
+    <div>
+        <span>Електронна почта:</span>
+        <span th:text="${contact.email}"></span>
+    </div>
+</div>
+
 <footer th:fragment="footer">
     <div class="container">
         <div>Footer</div>
