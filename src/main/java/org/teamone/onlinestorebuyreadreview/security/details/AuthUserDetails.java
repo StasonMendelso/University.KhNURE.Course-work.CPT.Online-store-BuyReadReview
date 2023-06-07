@@ -1,34 +1,37 @@
-package org.teamone.onlinestorebuyreadreview.config;
+package org.teamone.onlinestorebuyreadreview.security.details;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.teamone.onlinestorebuyreadreview.database.entity.User;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Stanislav Hlova
  */
+@Getter
 @RequiredArgsConstructor
-public class MockPersonDetails implements UserDetails {
+public class AuthUserDetails implements UserDetails {
 
-    private final String roleName;
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(roleName));
+        return List.of(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 
     @Override
     public String getPassword() {
-        return "password";
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return "username";
+        return user.getUsername();
     }
 
     @Override
@@ -38,7 +41,7 @@ public class MockPersonDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !user.getBlocked();
     }
 
     @Override
@@ -48,7 +51,6 @@ public class MockPersonDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !user.getInvalid();
     }
-
 }

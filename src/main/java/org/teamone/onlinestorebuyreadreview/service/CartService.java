@@ -30,6 +30,7 @@ public class CartService {
     }
 
     public Cart getCartByClientId(Long id) {
+        //TODO: 07.06.2023 IMPLEMENT
         throw new UnsupportedOperationException();
     }
 

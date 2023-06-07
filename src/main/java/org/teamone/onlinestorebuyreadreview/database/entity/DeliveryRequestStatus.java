@@ -1,4 +1,7 @@
 package org.teamone.onlinestorebuyreadreview.database.entity;
+
+import lombok.Getter;
+
 /**
  * @author Starukhina Anastasiia
  */

@@ -1,26 +1,21 @@
-package org.teamone.onlinestorebuyreadreview.config;
+package org.teamone.onlinestorebuyreadreview.security.auth;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.teamone.onlinestorebuyreadreview.database.entity.Role;
+import org.teamone.onlinestorebuyreadreview.security.details.NoAuthGuestDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Stanislav Hlova
  */
-public class MockAuthentication implements Authentication {
-    private final GrantedAuthority grantedAuthority;
-
-    public MockAuthentication(GrantedAuthority grantedAuthority) {
-        this.grantedAuthority = grantedAuthority;
-    }
-
+public class GuestAuthentication implements Authentication {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(grantedAuthority.getAuthority()));
+        return List.of(new SimpleGrantedAuthority(Role.GUEST.getName()));
     }
 
     @Override
@@ -30,26 +25,27 @@ public class MockAuthentication implements Authentication {
 
     @Override
     public Object getDetails() {
-        return new User("user1", "pass", Collections.singleton(new SimpleGrantedAuthority(grantedAuthority.getAuthority())));
+        return null;
     }
 
     @Override
     public Object getPrincipal() {
-        return new MockPersonDetails(grantedAuthority.getAuthority());
+        return new NoAuthGuestDetails();
     }
 
     @Override
     public boolean isAuthenticated() {
-        return true;
+        return false;
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
+        throw new IllegalStateException("Guest can't be authenticated! Create a new authentication object.");
     }
 
     @Override
     public String getName() {
-        return null;
+        return NoAuthGuestDetails.class.getName();
     }
 }
+
