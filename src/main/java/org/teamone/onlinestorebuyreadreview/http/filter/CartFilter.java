@@ -12,8 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.teamone.onlinestorebuyreadreview.database.entity.Cart;
+import org.teamone.onlinestorebuyreadreview.database.entity.Client;
 import org.teamone.onlinestorebuyreadreview.database.entity.Role;
-import org.teamone.onlinestorebuyreadreview.database.entity.User;
 import org.teamone.onlinestorebuyreadreview.security.details.AuthUserDetails;
 import org.teamone.onlinestorebuyreadreview.service.CartService;
 import org.teamone.onlinestorebuyreadreview.util.constant.SessionConstant;
@@ -45,9 +45,8 @@ public class CartFilter implements Filter {
             }
             if(currentRole.equals(Role.CLIENT)){
                 AuthUserDetails authUserDetails = (AuthUserDetails) securityContext.getAuthentication().getPrincipal();
-                User user = authUserDetails.getUser();
-//                httpSession.setAttribute(SessionConstant.CART,cartService.getCartByClientId(user.getId()));
-                httpSession.setAttribute(SessionConstant.CART,new Cart());
+                Client client = (Client) authUserDetails.getUser();
+                httpSession.setAttribute(SessionConstant.CART,cartService.getCartByClientId(client.getId()));
             }
         }
         chain.doFilter(request,response);
