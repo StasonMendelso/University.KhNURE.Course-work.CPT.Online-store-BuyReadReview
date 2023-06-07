@@ -44,14 +44,14 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: GUEST</span>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/books}">Каталог</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
                 <div th:replace="~{fragment::navbar-cart-element}">
@@ -73,7 +73,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: CLIENT</span>
             <li class="nav-item">
@@ -83,7 +83,7 @@
                 <a class="nav-link" th:href="@{/cabinet/orders}">Замовлення</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
                 <div th:replace="~{fragment::navbar-cart-element}">
@@ -105,7 +105,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: ADMIN</span>
             <li class="nav-item">
@@ -115,7 +115,7 @@
                 <a class="nav-link" th:href="@{/books/new}">Додати книгу</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li th:replace="~{fragment::navbar-authenticated}"></li>
         </ul>
@@ -132,23 +132,23 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
             <span class="navbar-text" aria-current="page">Role: COURIER</span>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/books}">Каталог</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li th:replace="~{fragment::navbar-authenticated}"></li>
         </ul>
     </div>
 </div>
-<form th:fragment="navbar-search-form" class="d-flex me-auto align-self-center" role="search">
-    <input class="form-control me-2" type="search" placeholder="Знайти книгу за назвою" aria-label="Search">
-    <button class="btn btn-outline-success" type="submit">Пошук</button>
-</form>
+<!--<form th:fragment="navbar-search-form" class="d-flex me-auto align-self-center" role="search">-->
+<!--    <input class="form-control me-2" type="search" placeholder="Знайти книгу за назвою" aria-label="Search">-->
+<!--    <button class="btn btn-outline-success" type="submit">Пошук</button>-->
+<!--</form>-->
 <div th:fragment="navbar-cart-element" class="d-flex flex-row">
     <a class="nav-link" th:href="@{/cart}">Корзина</a>
     <div class="d-flex flex-column">
