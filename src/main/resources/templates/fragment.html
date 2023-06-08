@@ -142,10 +142,10 @@
                 <a class="nav-link" th:href="@{/deliveries}">Доставки</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/deliveryrequests}">Заявки на доставку</a>
+                <a class="nav-link" th:href="@{/deliveryRequests}">Заявки на доставку</a>
             </li>
         </ul>
-        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>
+        <!--<form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
         <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Вийти</a>
@@ -174,7 +174,7 @@
                 <a class="nav-link" th:href="@{/deliveries}">Доставки</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/deliveryrequests}">Заявки на доставку</a>
+                <a class="nav-link" th:href="@{/deliveryRequests}">Заявки на доставку</a>
             </li>
         </ul>
 <!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
@@ -287,12 +287,16 @@
     <h5 class="card-header" style="font-weight: bold; text-transform: uppercase; text-align: center;" th:text="'Доставка номер ' + ${delivery.getId()}">Delivery id</h5>
     <div class="card-body">
         <h5 class="card-title" th:text="'Cтатус: ' + ${delivery.getDeliveryStatus().getName()}">Request id</h5>
-        <a href="#" class="btn btn-primary"
-           th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">Змінити статус</a>
         <a th:href="@{/deliveries/{id}(id=${delivery.id})}" class="btn btn-primary"
            th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
                     #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">Переглянути деталі</a>
     </div>
+</div>
+
+<div th:fragment="deliveryRequestRow(deliveryRequestList)"
+     th:each="deliveryRequest : ${deliveryRequestList}" class="card w-100"
+     th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                    #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
 </div>
 
 <footer th:fragment="footer">

@@ -11,7 +11,7 @@ public enum DeliveryRequestStatus {
     SELECTED("Обрано"),
     IN_PROCESS("В обробці"),
     DELIVERING("Доставляється"),
-    DELIVERED("Доставлено"),
+    DONE("Виконано"),
     CANCELED("Скасовано");
 
     private final String name;

@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class DeliveryRequest {
     private Long id;
     private Long managerId;
+    private String manager_first_name;
+    private String manager_last_name;
     private Long courierId;
     private Long orderId;
     private String clientWishDescription;

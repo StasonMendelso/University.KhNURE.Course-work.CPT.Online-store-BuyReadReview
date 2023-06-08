@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
 --
--- Host: localhost    Database: course_work
+-- Host: 127.0.0.1    Database: course_work_tkp
 -- ------------------------------------------------------
 -- Server version	8.0.31
 
@@ -81,15 +81,6 @@ UNLOCK TABLES;
 LOCK TABLES `book_review_characteristic` WRITE;
 /*!40000 ALTER TABLE `book_review_characteristic` DISABLE KEYS */;
 /*!40000 ALTER TABLE `book_review_characteristic` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `book_review_comment`
---
-
-LOCK TABLES `book_review_comment` WRITE;
-/*!40000 ALTER TABLE `book_review_comment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `book_review_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -305,6 +296,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` VALUES (15,4),(11,5),(9,6);
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,6 +315,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `delivery` WRITE;
 /*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
+INSERT INTO `delivery` VALUES (1,1,8,'2023-06-06 23:52:46','+380 (99) 234-75-24','Виконано без проблем',11);
 /*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,6 +334,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `delivery_item` WRITE;
 /*!40000 ALTER TABLE `delivery_item` DISABLE KEYS */;
+INSERT INTO `delivery_item` VALUES (8,1,145.00000000,1,'Я, \"Побєда\" і Берлін '),(20,1,119.00000000,2,'Тіні забутих предків. Intermezzo');
 /*!40000 ALTER TABLE `delivery_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,6 +353,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `delivery_request` WRITE;
 /*!40000 ALTER TABLE `delivery_request` DISABLE KEYS */;
+INSERT INTO `delivery_request` VALUES (1,1,8,2,'Нема побажань','2023-06-06 12:28:03',5,'Виконано без проблем');
 /*!40000 ALTER TABLE `delivery_request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -368,6 +363,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `delivery_request_status` WRITE;
 /*!40000 ALTER TABLE `delivery_request_status` DISABLE KEYS */;
+INSERT INTO `delivery_request_status` VALUES (1,'Створено'),(2,'Обрано'),(3,'В обробці'),(4,'Доставляється'),(5,'Доставлено'),(6,'Скасовано');
 /*!40000 ALTER TABLE `delivery_request_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -377,16 +373,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `delivery_status` WRITE;
 /*!40000 ALTER TABLE `delivery_status` DISABLE KEYS */;
+INSERT INTO `delivery_status` VALUES (1,'Підтверджено'),(2,'В обробці'),(3,'Упаковується'),(4,'Готово до доставки'),(5,'Забрано зі складу'),(6,'Доставляється'),(7,'Доставлено'),(8,'Узято'),(9,'Відмовлено отримувачем'),(10,'Повертається'),(11,'Виконано'),(12,'Повернено до складу');
 /*!40000 ALTER TABLE `delivery_status` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `deliveryman_contact`
---
-
-LOCK TABLES `deliveryman_contact` WRITE;
-/*!40000 ALTER TABLE `deliveryman_contact` DISABLE KEYS */;
-/*!40000 ALTER TABLE `deliveryman_contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -442,6 +430,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (12,'2023-06-05 21:14:49',4,1,2,'',10),(17,'2023-06-05 21:22:51',5,7,3,'Товар прибув вчасно',2);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -460,6 +449,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `order_status` WRITE;
 /*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
+INSERT INTO `order_status` VALUES (1,'Прийнято'),(2,'В обробці'),(3,'Упаковується'),(4,'Готово до відправки'),(5,'Передано службі доставки'),(6,'Доставляється'),(7,'Доставлено'),(8,'Скасовано менеджером за проханням покупця'),(9,'Відхилено'),(10,'Відмовлено отримувачем'),(11,'Забрано отримувачем'),(12,'Виконано'),(13,'Повернуто'),(14,'Повернуто до складу'),(15,'Зворотня доставка'),(16,'Доставлено повернуту доставку'),(17,'Забрано зі служби доставки');
 /*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -542,6 +532,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (1,'MANAGER'),(2,'ADMIN'),(3,'COURIER'),(4,'EDITOR'),(5,'CLIENT');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -569,6 +560,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('manager@gmail.com','{noop}manager','Анастасія','Старухіна','Олександрівна','+380 (50) 710-41-06',1,1,0,0,'2023-06-05 20:58:05'),('admin@gmail.com','{noop}admin','Станіслав','Глова','Олександрович','+380 (97) 125-56-23',2,2,0,0,'2023-06-05 21:00:29'),('editor@gmail.com','{noop}editor','Анна','Харченко','Ігорівна','+380 (96) 432-43-21',3,4,0,0,'2023-06-05 21:04:18'),('client@gmail.com','{noop}client','Дмитро','Тюрін','Андрійович','+380 (67) 389-22-02',4,5,0,0,'2023-06-05 21:06:15'),('client2@gmail.com','{noop}client2','Світлана','Старухіна','Миколаївна','+380 (99) 097-22-53',5,5,1,0,'2023-06-05 21:17:37'),('client3@gmail.com','{noop}client3','Софія','Закутська','Валеріївна','+380 (50) 534-28-14',6,5,1,1,'2023-06-05 21:21:13'),('manager2@gmail.com','{noop}manager2','Христина','Соловій','Іванівна','+380 (67) 235-67-32',7,1,0,0,'2023-06-05 21:21:13'),('courier@gmail.com','{noop}courier','Віктор','Ременс','Борисович','+380 (99) 234-75-24',8,3,0,0,'2023-06-06 12:25:52');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -581,4 +573,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-04  0:22:49
+-- Dump completed on 2023-06-07  2:05:20
