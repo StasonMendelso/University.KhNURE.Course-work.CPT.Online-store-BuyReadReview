@@ -29,5 +29,6 @@ public class ReadDeliveryRequestsExtractor implements ResultSetExtractor<List<De
             deliveryRequests.add(deliveryRequestExtractor.extractData(resultSet));
         }while(!resultSet.isAfterLast());
         return deliveryRequests;
+
     }
 }
