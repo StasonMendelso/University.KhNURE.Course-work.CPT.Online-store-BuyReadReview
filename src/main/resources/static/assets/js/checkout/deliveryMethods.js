@@ -12,7 +12,7 @@ $(document).ready(function () {
         hideAll();
         $(this).parent().append("<div class=\"_self-pick\">\n" +
             "                                <label for=\"receiver-middle-name\" class=\"form-label\">Адрес магазину</label>\n" +
-            "                                <input type=\"text\" class=\"form-control\" disabled\n" +
+            "                                <input type=\"text\" class=\"form-control\"\n" +
             "                                       name=\"delivery.field1\"\n" +
             "                                       value=\"м. Харків, Шевченківський район, просп. Науки, 14\">\n" +
             "                            </div>");

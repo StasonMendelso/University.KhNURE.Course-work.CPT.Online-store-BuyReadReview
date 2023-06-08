@@ -19,4 +19,8 @@ public class OrderCheckoutDto {
     private List<ReadOrderItemDto> orderItemList;
     private BigDecimal total;
     private BigDecimal courierDeliveryPrice;
+
+    public boolean isEmpty(){
+        return orderItemList==null || orderItemList.isEmpty();
+    }
 }

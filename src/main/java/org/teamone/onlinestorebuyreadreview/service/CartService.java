@@ -51,4 +51,14 @@ public class CartService {
     public void updateCart(Cart cart) {
         cartRepository.update(cart.getId(),cart);
     }
+
+    public Cart getLastDataAboutCartItems(Cart cart) {
+        cart.setCartItems(cartRepository.readLastData(cart.getCartItems()));
+        return cart;
+    }
+
+    public Cart clearCart(Cart cart) {
+        cart.clear();
+        return cart;
+    }
 }
