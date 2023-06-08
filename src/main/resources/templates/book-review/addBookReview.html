@@ -19,7 +19,7 @@
                 <div class="mb-2">
                     <label for="Book" class="form-label">Назва книги</label>
                     <select class="form-control form-select" id="Book" th:field="*{bookTitle}">
-                        <option type="text" th:each="publisher : ${bookList}" th:value="${book.title}"
+                        <option type="text" th:each="book : ${bookList}" th:value="${book.title}"
                                 th:text="${book.title}"
                                 th:selected="${book.equals(createBookReviewDto.bookTitle)}"></option>
                     </select>

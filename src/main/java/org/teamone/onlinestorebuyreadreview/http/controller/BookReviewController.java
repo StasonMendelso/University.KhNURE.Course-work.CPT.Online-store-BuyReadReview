@@ -37,7 +37,7 @@ import java.util.Optional;
  */
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/bookreview")
+@RequestMapping("/bookReviews")
 public class BookReviewController {
     private final BookReviewService bookReviewService;
     private final BookReviewTagService bookReviewTagService;
@@ -53,7 +53,7 @@ public class BookReviewController {
                 .stream()
                 .map(bookReviewReadMapper::map)
                 .toList());
-        return "bookReview/bookReviews";
+        return "book-review/bookReviews";
     }
 
     @GetMapping("/{id}")
@@ -61,7 +61,7 @@ public class BookReviewController {
         model.addAttribute("bookReview", bookReviewService.getBookReviewById(id)
                 .map(bookReviewReadMapper::map)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
-        return "bookReview/bookReview";
+        return "book-review/bookReview";
     }
 
     @GetMapping("/new")
@@ -76,7 +76,7 @@ public class BookReviewController {
                 "bookTitleList", bookList.stream().map(ReadBookDto::getTitle).toList(),
                 "newInputtedTags", createBookReviewDto.getTagNames().stream().filter(tag -> tagList.stream().map(ReadBookReviewTagDto::getName).noneMatch(s -> s.equals(tag))).toList(),
                 "createBookReviewDto", createBookReviewDto));
-        return "bookReview/addBookReview";
+        return "book-review/addBookReview";
     }
 
     @PostMapping
@@ -114,7 +114,7 @@ public class BookReviewController {
                 "newInputtedTags", editBookReviewDto.getTagNames().stream().filter(tag -> tagList.stream().map(ReadBookReviewTagDto::getName).noneMatch(s -> s.equals(tag))).toList(),
                 "editBookReviewDto", editBookReviewDto
         ));
-        return "bookReview/editBookReview";
+        return "book-review/editBookReview";
     }
 
     @PatchMapping
