@@ -78,13 +78,14 @@ public class BookService {
     public Optional<String> getArticleByBookId(Long bookId) {
         return bookRepository.readArticleByBookId(bookId);
     }
+
     @Transactional
     public Optional<ReadBookDto> update(EditBookDto editBookDto) {
         Book book = bookEditMapper.unmap(editBookDto);
 
         saveOrUpdateBookData(book, editBookDto.getAuthorNames(), editBookDto.getGenreNames());
 
-        Optional<Book> bookOptional = bookRepository.update(book.getId(),book);
+        Optional<Book> bookOptional = bookRepository.update(book.getId(), book);
 
         return bookOptional.map(bookReadMapper::map);
     }
@@ -120,5 +121,19 @@ public class BookService {
         book.setPublisher(publisherService.getPublisherByName(book.getPublisher().getName())
                 .orElseGet(() -> publisherService.save(book.getPublisher())
                         .orElseThrow()));
+    }
+
+    @Transactional
+    public Optional<Book> save(Book book) {
+        return bookRepository.create(book);
+    }
+
+    public Optional<Book> getBookByTitle(String title) {return bookRepository.readByTitle(title);}
+
+    public List<ReadBookDto> getBooks(){
+        return bookRepository.readAll()
+                .stream()
+                .map(bookReadMapper::map)
+                .toList();
     }
 }
