@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/checkout/deliveryMethods.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div th:if="${orderCheckoutDto == null}">
+            Ваш кошик порожній, тому наповніть його спочатку, щоб зробити замовлення.
+        </div>
+        <div class="order" th:if="${orderCheckoutDto != null}">
+            <h2>Оформлення замовлення</h2>
+            <div class="order-items">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td></td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Товар</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Артикул</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Ціна</td>
+                            <td class="text-center text-uppercase fw-bold fs-5">Кількість</td>
+                            <td class="text-end text-uppercase fw-bold fs-5">Проміжний підсумок</td>
+                        </tr>
+                        </thead>
+                        <tbody class="cart-tbody">
+                        <th:block th:each="orderItem : ${orderCheckoutDto.getOrderItemList()}">
+                            <tr class="align-middle cart-item-row">
+                                <td class="cart-item-picture">
+                                    <img th:src="@{/file/book/{file_id}(file_id=${orderItem.getFileId()})}"
+                                         class="card-img-top" alt="item-photo"/>
+                                </td>
+                                <td class="text-start">
+                                    <a th:text="${orderItem.getTitle()}"
+                                       th:href="@{/books/{id}(id=${orderItem.getBookId()})}"
+                                       class="text-decoration-none">Товар</a>
+                                </td>
+                                <td th:text="${orderItem.getArticle()}" class="text-start">Артикул</td>
+                                <td th:text="${#numbers.formatDecimal(orderItem.getPrice(),0,2)} + ' грн'"
+                                    class="text-start">Ціна
+                                </td>
+                                <td class="text-center" th:text="${orderItem.getQuantity()}"></td>
+                                <td th:text="${#numbers.formatDecimal(orderItem.getSubtotal(),0,2) + ' грн'}"
+                                    class="text-end text-success fw-bolder">Проміжний підсумок
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-2 border border-1 shadow-sm mb-2">
+                    <div class="text-uppercase h4">Підсумки замовлення</div>
+                    <hr>
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="text-black fs-4">Загалом</div>
+                        <div th:text="${#numbers.formatDecimal(orderCheckoutDto.getTotal(),0,2)+' грн'}"
+                             class="text-success fw-bolder cart-total-sum">Total sum
+                        </div>
+                    </div>
+                    <!--                    <div class="used-bonuses d-flex flex-row justify-content-between">-->
+                    <!--                        <div class="text-black fs-4">Використано бонусів:</div>-->
+                    <!--                        <div th:text="${orderDetails.usedBonuses}" class="text-success fw-bolder"></div>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="d-flex flex-row justify-content-between"-->
+                    <!--                         th:if="${orderDetails.getDeliveryInfo().getClass().simpleName=='ReadCourierDeliveryDto'}">-->
+                    <!--                        <div class="text-black fs-4">Вартість кур'єрської доставки:</div>-->
+                    <!--                        <div th:text="${#numbers.formatDecimal(orderDetails.getDeliveryInfo().getPrice(),0,2)+' грн'}"-->
+                    <!--                             class="text-success fw-bolder"></div>-->
+                    <!--                    </div>-->
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="text-black fs-4">До оплати</div>
+                        <div th:text="${#numbers.formatDecimal(orderCheckoutDto.getTotal(),0,2)+' грн'}"
+                             class="text-success fw-bolder cart-total-sum">Total to pay
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form th:object="${createOrderDto}">
+                <div class="contact contact-buyer">
+                    <h4>Контактні дані покупця</h4>
+                    <div>
+                        <div>
+                            <div>
+                                <label for="buyer-last-name" class="form-label">Прізвище</label>
+                                <input type="text" class="form-control" id="buyer-last-name" placeholder="Прізвище"
+                                       th:field="*{buyerContact.lastName}">
+                            </div>
+
+                            <div>
+                                <label for="buyer-first-name" class="form-label">Ім'я</label>
+                                <input type="text" class="form-control" id="buyer-first-name" placeholder="Ім'я"
+                                       th:field="*{buyerContact.firstName}">
+                            </div>
+                            <div>
+                                <label for="buyer-middle-name" class="form-label">По-батькові</label>
+                                <input type="text" class="form-control" id="buyer-middle-name" placeholder="По-батькові"
+                                       th:field="*{buyerContact.middleName}">
+                            </div>
+                            <div>
+                                <label for="buyer-email" class="form-label">Електронна почта</label>
+                                <input type="email" class="form-control" id="buyer-email" placeholder="Електронна почта"
+                                       th:field="*{buyerContact.email}">
+                            </div>
+                            <div>
+                                <label for="buyer-telephone" class="form-label">Телефон</label>
+                                <input type="text" class="form-control" id="buyer-telephone" placeholder="Телефон"
+                                       th:field="*{buyerContact.telephoneNumber}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact contact-receiver">
+                    <h4>Контактні дані отримувача</h4>
+                    <div>
+                        <div>
+                            <div>
+                                <label for="receiver-last-name" class="form-label">Прізвище</label>
+                                <input type="text" class="form-control" id="receiver-last-name" placeholder="Прізвище"
+                                       th:field="*{receiverContact.lastName}">
+                            </div>
+
+                            <div>
+                                <label for="receiver-first-name" class="form-label">Ім'я</label>
+                                <input type="text" class="form-control" id="receiver-first-name" placeholder="Ім'я"
+                                       th:field="*{receiverContact.firstName}">
+                            </div>
+                            <div>
+                                <label for="receiver-middle-name" class="form-label">По-батькові</label>
+                                <input type="text" class="form-control" id="receiver-middle-name"
+                                       placeholder="По-батькові"
+                                       th:field="*{receiverContact.middleName}">
+                            </div>
+                            <div>
+                                <label for="receiver-email" class="form-label">Електронна почта</label>
+                                <input type="email" class="form-control" id="receiver-email"
+                                       placeholder="Електронна почта"
+                                       th:field="*{receiverContact.email}">
+                            </div>
+                            <div>
+                                <label for="receiver-telephone" class="form-label">Телефон</label>
+                                <input type="text" class="form-control" id="receiver-telephone" placeholder="Телефон"
+                                       th:field="*{receiverContact.telephoneNumber}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="delivery-method">
+                    <h4>Спосіб доставки</h4>
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{deliveryMethod}" value="Кур'єром"
+                                   id="courier">
+                            <label class="form-check-label">Кур'єром</label>
+                            <div class="_courier" th:if="*{deliveryMethod =='Кур''єром'}">
+                                <label for="receiver-middle-name" class="form-label">Адрес доставки</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{delivery.field1}">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{deliveryMethod}" value="Самовивіз"
+                                   id="self-pick">
+                            <label class="form-check-label">Самовивіз</label>
+                            <div class="_self-pick" th:if="*{deliveryMethod =='Самовивіз'}">
+                                <label for="receiver-middle-name" class="form-label">Адрес магазину</label>
+                                <input type="text" class="form-control" disabled
+                                       name="delivery.field1"
+                                       value="м. Харків, Шевченківський район, просп. Науки, 14">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{deliveryMethod}"
+                                   value="Новою поштою" id="nova-poshta">
+                            <label class="form-check-label">Новою поштою</label>
+                            <div class="_nova-poshta" th:if="*{deliveryMethod == 'Новою поштою'}">
+                                <div>
+                                    <label for="receiver-middle-name" class="form-label">Місто доставки</label>
+                                    <input type="text" class="form-control"
+                                           th:field="*{delivery.field1}">
+                                </div>
+                                <div>
+                                    <label for="receiver-middle-name" class="form-label">Номер відділення</label>
+                                    <input type="text" class="form-control"
+                                           th:field="*{delivery.field2}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-method">
+                    <h4>Спосіб оплати</h4>
+                    <div class="form-check" th:each="paymentType : ${paymentMethodList}">
+                        <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
+                               th:value="${paymentType}">
+                        <label class="form-check-label" th:text="${paymentType}">
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="mt-2 btn btn-success">Оформити замовлення</button>
+            </form>
+
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
+
