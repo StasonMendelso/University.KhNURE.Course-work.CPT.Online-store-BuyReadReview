@@ -26,7 +26,7 @@ public class ReadDeliveryRequestsExtractor implements ResultSetExtractor<List<De
             return Collections.emptyList();
         List<DeliveryRequest> deliveryRequests = new ArrayList<>();
         do{
-            
+
             deliveryRequests.add(deliveryRequestExtractor.extractData(resultSet));
         }while(!resultSet.isAfterLast());
         return deliveryRequests;

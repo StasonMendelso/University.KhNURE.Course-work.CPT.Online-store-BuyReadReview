@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Builder
 public class DeliveryItem {
     private Long bookId;
-    private Long isbn;
     private Long deliveryId;
     private BigDecimal price;
     private int quantity;

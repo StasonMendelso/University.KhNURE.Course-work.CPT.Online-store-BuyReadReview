@@ -24,6 +24,7 @@ public class CreateDeliveryDtoValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         CreateDeliveryDto createDeliveryDto = (CreateDeliveryDto) target;
+
         //if()
 /*        if(deliveryService.getAllIsbn().contains(createBookDto.getIsbn())){
             errors.rejectValue("isbn","","Книга з таким ISBN вже є.");

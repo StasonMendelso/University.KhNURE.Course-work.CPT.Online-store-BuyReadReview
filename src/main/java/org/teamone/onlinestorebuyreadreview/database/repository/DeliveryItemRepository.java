@@ -53,4 +53,19 @@ public class DeliveryItemRepository implements CrudRepository<Long, DeliveryItem
                 "book_title FROM delivery_item ORDER BY delivery_id"+
                 "WHERE delivery_id = ?", deliveryItemRowMapper, deliveryId);
     }
+
+    public List<DeliveryItem> readAllByOrderId(Long orderId){
+        return jdbcTemplate.query("SELECT order_item.book_id,\n" +
+                "delivery.id AS 'delivery_id',\n" +
+                "price, order_item.quantity, \n" +
+                "order_item.title\n" +
+                "FROM order_item\n" +
+                "LEFT JOIN  course_work_tkp.order ON \n" +
+                "course_work_tkp.order.id = order_item.order_id\n" +
+                "LEFT JOIN delivery_request ON \n" +
+                "delivery_request.order_id = course_work_tkp.order.id\n" +
+                "LEFT JOIN delivery ON \n" +
+                "delivery.request_id = delivery_request.id\n" +
+                "WHERE course_work_tkp.order.id = ?", deliveryItemRowMapper, orderId);
+    }
 }

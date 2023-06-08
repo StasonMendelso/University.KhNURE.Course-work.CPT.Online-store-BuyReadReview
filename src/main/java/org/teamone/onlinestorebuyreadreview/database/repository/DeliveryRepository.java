@@ -5,16 +5,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import org.teamone.onlinestorebuyreadreview.database.entity.Delivery;
-import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryStatus;
+import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryItem;
+import org.teamone.onlinestorebuyreadreview.database.entity.Genre;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.DeliveryExtractor;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.ReadDeliveriesExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
-import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookInsertStatementSetter;
-import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookUpdateStatementSetter;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.BatchPreparedStatementSetterWithBatchSize;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.delivery.DeliveryInsertStatementSetter;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
@@ -30,45 +31,35 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
     private final ReadDeliveriesExtractor readDeliveriesExtractor;
 
     @Override
-    public Optional<Delivery> create(Delivery entity) {
-/*        KeyHolder keyHolder = new GeneratedKeyHolder();
+    public Optional<Delivery> create(Delivery delivery) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO book(paper_quantity, title, description, isbn, hidden, price, quantity, article, publisher_id) VALUE (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            new BookInsertStatementSetter(book).setValues(preparedStatement);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO delivery(request_id, courier_id, \n" +
+                    "courier_telephone_number, description_for_status, \n" +
+                    "delivery_status_id) VALUE (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            new DeliveryInsertStatementSetter(delivery).setValues(preparedStatement);
             return preparedStatement;
         }, keyHolder);
         Long generatedKey = keyHolder.getKey().longValue();
-        insertIntoBookGenre(generatedKey, book.getGenres());
-        insertIntoAuthorBook(generatedKey, book.getAuthors());
+        insertIntoDeliveryItem(generatedKey, delivery.getDeliveryItems());
+        return read(generatedKey);
+    }
+    private void insertIntoDeliveryItem(Long deliveryId, List<DeliveryItem> items) {
+        jdbcTemplate.batchUpdate("INSERT INTO delivery_item(book_id, delivery_id, price, quantity, book_title) VALUE (?,?,?,?,?)", new BatchPreparedStatementSetterWithBatchSize(items.size()) {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                int index = 1;
+                preparedStatement.setLong(index++, deliveryId);
+                preparedStatement.setLong(index++, items.get(i).getDeliveryId());
+                preparedStatement.setBigDecimal(index++, items.get(i).getPrice());
+                preparedStatement.setLong(index++, items.get(i).getQuantity());
+                preparedStatement.setString(index++, items.get(i).getBookTitle());
+            }
 
-
-        return read(generatedKey);*/
-
-        return Optional.empty();
+        });
     }
 
     public Optional<Delivery> update(/*Long deliveryId, Delivery delivery*/) {
-        /*String query = "SELECT id FROM table_name WHERE attribute = ?";
-        Long statusId = jdbcTemplate.queryForObject("SELECT id FROM delivery_status WHERE courier_delivery_status = ?", Long.class, deliveryStatus.getName());
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE delivery " +
-                    "SET delivery_status_id = ?" +
-                    "WHERE delivery.id = ?");
-            int index =  1;
-            preparedStatement.setLong(index++, statusId);
-            preparedStatement.setLong(index, deliveryId);
-            return preparedStatement;
-        });*/
-        //jdbcTemplate.update("")
-
-/*
-        jdbcTemplate.update("DELETE FROM book_genre WHERE book_id = ? ", id);
-        jdbcTemplate.update("DELETE FROM author_book WHERE book_id = ? ", id);
-        insertIntoBookGenre(id, book.getGenres());
-        insertIntoAuthorBook(id, book.getAuthors());*/
-
-        //return null;
         return Optional.empty();
     }
 
