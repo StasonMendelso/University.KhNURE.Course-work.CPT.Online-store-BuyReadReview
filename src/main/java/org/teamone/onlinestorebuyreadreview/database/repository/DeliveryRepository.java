@@ -2,6 +2,8 @@ package org.teamone.onlinestorebuyreadreview.database.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import org.teamone.onlinestorebuyreadreview.database.entity.Delivery;
@@ -9,9 +11,11 @@ import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryStatus;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.DeliveryExtractor;
 import org.teamone.onlinestorebuyreadreview.database.mapper.delivery.ReadDeliveriesExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
+import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookInsertStatementSetter;
 import org.teamone.onlinestorebuyreadreview.database.statement.setter.book.BookUpdateStatementSetter;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,19 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
 
     @Override
     public Optional<Delivery> create(Delivery entity) {
+/*        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO book(paper_quantity, title, description, isbn, hidden, price, quantity, article, publisher_id) VALUE (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            new BookInsertStatementSetter(book).setValues(preparedStatement);
+            return preparedStatement;
+        }, keyHolder);
+        Long generatedKey = keyHolder.getKey().longValue();
+        insertIntoBookGenre(generatedKey, book.getGenres());
+        insertIntoAuthorBook(generatedKey, book.getAuthors());
+
+
+        return read(generatedKey);*/
+
         return Optional.empty();
     }
 
@@ -67,7 +84,8 @@ public class DeliveryRepository implements CrudRepository<Long, Delivery>{
     @Override
     public Optional<Delivery> read(Long id) {
         return Optional.ofNullable(jdbcTemplate.query(
-                new PrepareStatementCreatorWithScrolledResultSet("SELECT delivery.id AS 'delivery_id',delivery.request_id, delivery.courier_id, \n" +
+                new PrepareStatementCreatorWithScrolledResultSet(
+                        "SELECT delivery.id AS 'delivery_id',delivery.request_id, delivery.courier_id, \n" +
                         "delivery.creation_date, delivery.courier_telephone_number, delivery.description_for_status, \n" +
                         "delivery_status.courier_delivery_status AS 'delivery_status',\n" +
                         "delivery_item.book_id, delivery_item.price, delivery_item.quantity, delivery_item.book_title \n" +

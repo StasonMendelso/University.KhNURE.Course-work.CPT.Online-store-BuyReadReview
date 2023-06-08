@@ -19,11 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadDeliveryRequestsExtractor implements ResultSetExtractor<List<DeliveryRequest>> {
     private final DeliveryRequestExtractor deliveryRequestExtractor;
+
     @Override
     public List<DeliveryRequest> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-        if(!resultSet.isBeforeFirst()){
+        if(!resultSet.isBeforeFirst())
             return Collections.emptyList();
-        }
         List<DeliveryRequest> deliveryRequests = new ArrayList<>();
         do{
             deliveryRequests.add(deliveryRequestExtractor.extractData(resultSet));

@@ -3,16 +3,14 @@ package org.teamone.onlinestorebuyreadreview.dto.deliveryRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryRequestStatus;
 
 import java.time.LocalDate;
 
 /**
- * @author Starukhina Anastasiia
+ * @author Anastasiia Starukhina
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReadDeliveryRequestDto {

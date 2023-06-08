@@ -21,7 +21,6 @@ public class DeliveryRequestExtractor implements ResultSetExtractor<DeliveryRequ
         if(!resultSet.next()){
             return null;
         }
-        DeliveryRequest deliveryRequest = deliveryRequestRowMapper.mapRow(resultSet, resultSet.getRow());
-        return deliveryRequest;
+        return deliveryRequestRowMapper.mapRow(resultSet, resultSet.getRow());
     }
 }
