@@ -32,7 +32,6 @@ DROP TABLE book_file;
 DROP TABLE `file`;
 DROP TABLE book_review_with_tag;
 DROP TABLE book_review_tag;
-DROP TABLE book_review_tag_category;
 DROP TABLE book_review;
 DROP TABLE book_review_request_for_publication;
 DROP TABLE book_review_request_for_publication_status;
@@ -355,27 +354,11 @@ CREATE TABLE book_review_tag
     `name`                  VARCHAR(100) NOT NULL
         CONSTRAINT  book_review_tag_name CHECK (`name` != ""),
     description           VARCHAR(60) NULL,
-    book_review_tag_category_id  BIGINT NULL,
     PRIMARY KEY (id)
 );
 
 
 CREATE INDEX XIE1book_review_tag_name ON book_review_tag
-    (
-     `name`
-        );
-
-
-CREATE TABLE book_review_tag_category
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `name`                  VARCHAR(60) NOT NULL
-        CONSTRAINT  book_review_tag_category_name CHECK (`name` != ""),
-    PRIMARY KEY (id)
-);
-
-
-CREATE INDEX XIE1book_review_tag_category_name ON book_review_tag_category
     (
      `name`
         );
@@ -884,10 +867,6 @@ ALTER TABLE book_review_request_for_publication_criterion_score
 
 ALTER TABLE book_review_request_for_publication_criterion_score
     ADD FOREIGN KEY Criteria_can_evaluate_manyrequests_for_publication (review_score_criterion_id) REFERENCES book_review_score_criterion(id);
-
-
-ALTER TABLE book_review_tag
-    ADD FOREIGN KEY R_331 (book_review_tag_category_id) REFERENCES book_review_tag_category(id);
 
 
 ALTER TABLE book_review_with_tag

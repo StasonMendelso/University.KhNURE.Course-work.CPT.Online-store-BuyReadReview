@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta th:replace="~{fragment::main-head-data}">
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+  <div class="header">
+    <nav th:replace="~{fragment::navbar}"></nav>
+  </div>
+  <div class="content container">
+    <div class="review">
+      <div class="h3" th:text="${bookReview.getTitle()}"></div>
+<!--сделать вызов книги самой, взять название и автора-->
+      <div>
+        Author of review: <span th:text="${bookReview.getClientPseudonym()}">clientPseudonym</span>
+      </div>
+      <div>
+        Review: <span th:text="${bookReview.getContent()}">content</span>
+      </div>
+      <div>
+        Tags:
+        <span th:each="bookReviewTag, iStats : ${bookReview.getBookReviewTags()}" th:object="${bookReviewTag}" th:text="${iStats.last ? bookReviewTag.getName() + ' - ' + bookReviewTag.getDescription() :bookReviewTag.getName() + ' - ' + bookReviewTag.getDescription() + ', '}">bookReviewTag</span>
+      </div>
+      <div>
+        Rating: <span th:text="${bookReview.getRating()}">rating</span>
+      </div>
+      <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
+        <a th:href="@{/books/{id}/delete(id=${bookReview.id})}" class="btn btn-warning">Видалити</a>
+<!--сделать что-то с удалением-->
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <footer th:replace="~{fragment::footer}"></footer>
+  </div>
+</div>
+</body>
+</html>
