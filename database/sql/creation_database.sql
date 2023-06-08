@@ -479,6 +479,7 @@ CREATE TABLE delivery
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     request_id                    BIGINT NOT NULL,
     courier_id            BIGINT NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     courier_telephone_number      VARCHAR(25) NOT NULL
         CONSTRAINT  delivery_courier_telephone_number CHECK (delivery.courier_telephone_number != ""),
     description_for_status  MEDIUMTEXT NOT NULL,
