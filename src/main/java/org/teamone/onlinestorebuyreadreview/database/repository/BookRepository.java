@@ -51,19 +51,19 @@ public class BookRepository implements CrudRepository<Long, Book> {
     public Optional<Book> read(Long id) {
         return Optional.ofNullable(jdbcTemplate.query(
                 new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
-                                                                 "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
-                                                                 "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
-                                                                 "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
-                                                                 "file.id AS 'file_id', file.name AS 'file_name', file.extension AS 'file_extension', file.relative_path AS 'file_relative_path' " +
-                                                                 "FROM book " +
-                                                                 "LEFT JOIN publisher ON book.publisher_id = publisher.id " +
-                                                                 "LEFT JOIN book_genre ON book.id = book_genre.book_id " +
-                                                                 "LEFT JOIN genre ON book_genre.genre_id = genre.id " +
-                                                                 "LEFT JOIN author_book ON book.id = author_book.book_id " +
-                                                                 "LEFT JOIN author ON author_book.author_id = author.id " +
-                                                                 "LEFT JOIN book_file ON book.id = book_file.book_id " +
-                                                                 "LEFT JOIN file ON book_file.file_id = file.id " +
-                                                                 "WHERE book.id = ?"),
+                        "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
+                        "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
+                        "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
+                        "file.id AS 'file_id', file.name AS 'file_name', file.extension AS 'file_extension', file.relative_path AS 'file_relative_path' " +
+                        "FROM book " +
+                        "LEFT JOIN publisher ON book.publisher_id = publisher.id " +
+                        "LEFT JOIN book_genre ON book.id = book_genre.book_id " +
+                        "LEFT JOIN genre ON book_genre.genre_id = genre.id " +
+                        "LEFT JOIN author_book ON book.id = author_book.book_id " +
+                        "LEFT JOIN author ON author_book.author_id = author.id " +
+                        "LEFT JOIN book_file ON book.id = book_file.book_id " +
+                        "LEFT JOIN file ON book_file.file_id = file.id " +
+                        "WHERE book.id = ?"),
                 preparedStatement -> preparedStatement.setLong(1, id),
                 bookExtractor));
     }
@@ -72,10 +72,10 @@ public class BookRepository implements CrudRepository<Long, Book> {
     public Optional<Book> update(Long id, Book book) {
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE book " +
-                                                                              "SET paper_quantity = ?, title = ?, description = ?, isbn = ?, hidden = ?, price = ?, quantity = ?, article = ?, publisher_id = ? " +
-                                                                              "WHERE book.id = ?");
+                    "SET paper_quantity = ?, title = ?, description = ?, isbn = ?, hidden = ?, price = ?, quantity = ?, article = ?, publisher_id = ? " +
+                    "WHERE book.id = ?");
 
-            new BookUpdateStatementSetter(id,book).setValues(preparedStatement);
+            new BookUpdateStatementSetter(id, book).setValues(preparedStatement);
             return preparedStatement;
         });
         jdbcTemplate.update("DELETE FROM book_genre WHERE book_id = ? ", id);
@@ -119,36 +119,36 @@ public class BookRepository implements CrudRepository<Long, Book> {
     public List<Book> readAll() {
         return jdbcTemplate.query(
                 new PrepareStatementCreatorWithScrolledResultSet("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article', " +
-                                                                 "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
-                                                                 "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
-                                                                 "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
-                                                                 "file.id AS 'file_id', file.name AS 'file_name', file.extension AS 'file_extension', file.relative_path AS 'file_relative_path' " +
-                                                                 "FROM book " +
-                                                                 "LEFT JOIN publisher ON book.publisher_id = publisher.id " +
-                                                                 "LEFT JOIN book_genre ON book.id = book_genre.book_id " +
-                                                                 "LEFT JOIN genre ON book_genre.genre_id = genre.id " +
-                                                                 "LEFT JOIN author_book ON book.id = author_book.book_id " +
-                                                                 "LEFT JOIN author ON author_book.author_id = author.id " +
-                                                                 "LEFT JOIN book_file ON book.id = book_file.book_id " +
-                                                                 "LEFT JOIN file ON book_file.file_id = file.id"),
+                        "publisher.id AS 'publisher_id', publisher.name AS 'publisher_name', " +
+                        "genre.id AS 'genre_id', genre.`name` AS 'genre_name'," +
+                        "author.id AS 'author_id', author.first_name AS 'author_first_name', author.last_name AS 'author_last_name', author.pseudonym AS 'author_pseudonym', " +
+                        "file.id AS 'file_id', file.name AS 'file_name', file.extension AS 'file_extension', file.relative_path AS 'file_relative_path' " +
+                        "FROM book " +
+                        "LEFT JOIN publisher ON book.publisher_id = publisher.id " +
+                        "LEFT JOIN book_genre ON book.id = book_genre.book_id " +
+                        "LEFT JOIN genre ON book_genre.genre_id = genre.id " +
+                        "LEFT JOIN author_book ON book.id = author_book.book_id " +
+                        "LEFT JOIN author ON author_book.author_id = author.id " +
+                        "LEFT JOIN book_file ON book.id = book_file.book_id " +
+                        "LEFT JOIN file ON book_file.file_id = file.id"),
                 readBooksExtractor);
 
     }
 
     public List<String> readAllIsbn() {
         return jdbcTemplate.query("SELECT book.isbn AS 'book_isbn' " +
-                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_isbn"));
+                "FROM book", (resultSet, rowNum) -> resultSet.getString("book_isbn"));
     }
 
     public List<String> readAllArticle() {
         return jdbcTemplate.query("SELECT book.article AS 'book_article' " +
-                                  "FROM book", (resultSet, rowNum) -> resultSet.getString("book_article"));
+                "FROM book", (resultSet, rowNum) -> resultSet.getString("book_article"));
     }
 
     public Optional<String> readIsbnByBookId(Long bookId) {
         return Optional.ofNullable(jdbcTemplate.query("SELECT book.isbn AS 'book_isbn' " +
-                                                      "FROM book " +
-                                                      "WHERE book.id = ?", resultSet -> {
+                "FROM book " +
+                "WHERE book.id = ?", resultSet -> {
             if (resultSet.next()) {
                 return resultSet.getString("book_isbn");
             }
@@ -158,12 +158,18 @@ public class BookRepository implements CrudRepository<Long, Book> {
 
     public Optional<String> readArticleByBookId(Long bookId) {
         return Optional.ofNullable(jdbcTemplate.query("SELECT book.article AS 'book_article' " +
-                                                      "FROM book " +
-                                                      "WHERE book.id = ?", resultSet -> {
+                "FROM book " +
+                "WHERE book.id = ?", resultSet -> {
             if (resultSet.next()) {
                 return resultSet.getString("book_article");
             }
             return null;
         }, bookId));
+    }
+
+    public Optional<Book> readByTitle(String title) {
+        return Optional.ofNullable(jdbcTemplate.query("SELECT id AS 'book_id', title AS 'book_title' " +
+                "FROM book " +
+                "WHERE title = ?", bookExtractor, title));
     }
 }
