@@ -9,6 +9,7 @@ import org.teamone.onlinestorebuyreadreview.database.entity.Author;
 import org.teamone.onlinestorebuyreadreview.database.entity.Book;
 import org.teamone.onlinestorebuyreadreview.database.entity.Genre;
 import org.teamone.onlinestorebuyreadreview.database.mapper.book.BookExtractor;
+import org.teamone.onlinestorebuyreadreview.database.mapper.book.BookRowMapper;
 import org.teamone.onlinestorebuyreadreview.database.mapper.book.ReadBooksExtractor;
 import org.teamone.onlinestorebuyreadreview.database.statement.creator.PrepareStatementCreatorWithScrolledResultSet;
 import org.teamone.onlinestorebuyreadreview.database.statement.setter.BatchPreparedStatementSetterWithBatchSize;
@@ -167,6 +168,36 @@ public class BookRepository implements CrudRepository<Long, Book> {
         }, bookId));
     }
 
+    public List<Book> readAllById(List<Long> bookIdList) {
+        return jdbcTemplate.query(connection -> {
+                    StringBuilder query = new StringBuilder("SELECT book.id AS 'book_id', isbn AS 'book_isbn', paper_quantity AS 'book_paper_quantity', title AS 'book_title', description AS 'book_description', price AS 'book_price', hidden AS 'book_hidden', quantity AS 'book_quantity', article AS 'book_article' FROM book WHERE book.id IN(");
+                    for (int i = 0; i < bookIdList.size(); i++) {
+                        query.append("?");
+                        if (i != bookIdList.size() - 1) {
+                            query.append(",");
+                        }
+                    }
+                    query.append(")");
+                    PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
+                    int index = 1;
+                    for (Long id : bookIdList) {
+                        preparedStatement.setLong(index++, id);
+                    }
+
+                    return preparedStatement;
+                }
+                , (resultSet, rowNumber) -> Book.builder()
+                        .id(resultSet.getLong("book_id"))
+                        .title(resultSet.getString("book_title"))
+                        .article(resultSet.getString("book_article"))
+                        .description(resultSet.getString("book_description"))
+                        .hidden(resultSet.getBoolean("book_hidden"))
+                        .isbn(resultSet.getString("book_isbn"))
+                        .quantity(resultSet.getInt("book_quantity"))
+                        .paperQuantity(resultSet.getInt("book_paper_quantity"))
+                        .price(resultSet.getBigDecimal("book_price"))
+                        .build());
+    }
     public Optional<Book> readByTitle(String title) {
         return Optional.ofNullable(jdbcTemplate.query("SELECT id AS 'book_id', title AS 'book_title' " +
                 "FROM book " +

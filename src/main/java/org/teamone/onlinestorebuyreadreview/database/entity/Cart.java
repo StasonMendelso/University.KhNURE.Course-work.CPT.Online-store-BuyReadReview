@@ -89,4 +89,8 @@ public class Cart {
                 .findFirst()
                 .ifPresent(cartItem -> cartItem.setQuantity(quantity));
     }
+
+    public void clear() {
+        this.cartItems.clear();
+    }
 }

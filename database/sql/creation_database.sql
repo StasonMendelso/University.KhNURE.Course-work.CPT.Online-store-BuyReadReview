@@ -46,7 +46,6 @@ DROP TABLE publisher;
 DROP TABLE cart;
 DROP TABLE courier_delivery;
 DROP TABLE nova_poshta_delivery;
-DROP TABLE nova_poshta_delivery_status;
 DROP TABLE shop_delivery;
 DROP TABLE shop_delivery_status;
 DROP TABLE delivery_info;
@@ -89,7 +88,7 @@ CREATE TABLE book
     hidden                boolean NOT NULL DEFAULT 0,
     price                 DECIMAL(30,8) NOT NULL DEFAULT 0
         CONSTRAINT  book_price CHECK (price >=0),
-    quantity              FLOAT NOT NULL DEFAULT 0
+    quantity              INTEGER NOT NULL DEFAULT 0
         CONSTRAINT  book_quantity CHECK (quantity >=0),
     article               VARCHAR(25) NOT NULL
         CONSTRAINT  book_article CHECK (article != ""),
@@ -587,17 +586,10 @@ CREATE TABLE nova_poshta_delivery
     waybill               DECIMAL(30,8) NOT NULL DEFAULT 0,
     invoice_number 		  VARCHAR(40) NOT NULL UNIQUE,
     id                    BIGINT NOT NULL ,
-    nova_poshta_delivery_status  BIGINT NOT NULL,
     PRIMARY KEY (id)
 );
 
 
-CREATE TABLE nova_poshta_delivery_status
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    delivery_status       VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE `order`
@@ -979,10 +971,6 @@ ALTER TABLE edit_review_permission
 ALTER TABLE nova_poshta_delivery
     ADD FOREIGN KEY (id) REFERENCES delivery_info(id)
         ON DELETE CASCADE;
-
-ALTER TABLE nova_poshta_delivery
-    ADD FOREIGN KEY R_275 (nova_poshta_delivery_status) REFERENCES nova_poshta_delivery_status(id);
-
 
 ALTER TABLE `order`
     ADD FOREIGN KEY R_75 (client_id) REFERENCES `client`(id);
