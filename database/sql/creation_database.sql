@@ -499,6 +499,7 @@ CREATE TABLE delivery
         CONSTRAINT  delivery_courier_telephone_number CHECK (delivery.courier_telephone_number != ""),
     description_for_status  MEDIUMTEXT NOT NULL,
     delivery_status_id    BIGINT NOT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 

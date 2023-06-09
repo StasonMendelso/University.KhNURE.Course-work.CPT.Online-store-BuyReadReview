@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="order">
+            <div class="order-items">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td class="text-start text-uppercase fw-bold fs-5">Поле 1</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Поле 2</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Поле 3</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Поле 4</td>
+                        </tr>
+                        </thead>
+                        <tbody class="cart-tbody">
+                        <th:block th:each="data : ${dataList}">
+                            <tr class="align-middle cart-item-row">
+                                <td class="text-start" th:text="${data.getField1()}">
+                                    Поле 1
+                                </td>
+                                <td class="text-start" th:text="${data.getField1()}">
+                                    Поле 2
+                                </td>
+                                <td th:text="${data.getField1()}"  class="text-start">
+                                   >Поле 3
+                                </td>
+                                <td th:text="${data.getField1()}" class="text-start">
+                                    Поле 4
+                                </td>
+
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
+
