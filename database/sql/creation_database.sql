@@ -1,4 +1,4 @@
-DROP TABLE book_review_edited;
+/*DROP TABLE book_review_edited;
 DROP TABLE receiver_contact;
 DROP TABLE card_payment;
 DROP TABLE cash_payment;
@@ -55,7 +55,7 @@ DROP TABLE `order`;
 DROP TABLE `client`;
 DROP TABLE `user`;
 DROP TABLE `role`;
-DROP TABLE order_status;
+DROP TABLE order_status;*/
 
 
 CREATE TABLE author
