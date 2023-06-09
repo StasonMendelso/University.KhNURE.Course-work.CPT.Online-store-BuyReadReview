@@ -1,16 +1,23 @@
-package org.teamone.onlinestorebuyreadreview.dto.deliveryrequest;
+package org.teamone.onlinestorebuyreadreview.dto.deliveryRequest;
 
-import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.teamone.onlinestorebuyreadreview.database.entity.DeliveryRequestStatus;
 
 import java.time.LocalDate;
 
 /**
- * @author Starukhina Anastasiia
+ * @author Anastasiia Starukhina
  */
-public class CreateDeliveryRequestDto {
+@Data
+@AllArgsConstructor
+@Builder
+public class ReadDeliveryRequestDto {
     private Long id;
     private Long managerId;
+    private String manager_first_name;
+    private String manager_last_name;
     private Long courierId;
     private Long orderId;
     private String clientWishDescription;

@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta th:replace="~{fragment::main-head-data}">
 </head>
 <body>
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <div class="header">
+            <nav th:replace="~{fragment::navbar}"></nav>
+        </div>
 
+        <div class="content container">
+            <div class="delivery" th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER') ||
+                 (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER')}">
+                <div class="card w-100">
+                    <div class="card-header" style="font-weight: bold;  text-transform: uppercase; text-align: center;" th:text="${'Доставка номер ' + delivery.getId()}"></div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:text="${'Номер заявки на доставку: ' + delivery.getRequestId()}"></li>
+                        <li class="list-group-item" th:text="${'Номер кур''єра: ' + delivery.getCourierId()}"></li>
+                        <li class="list-group-item" th:text="${'Статус доставки: ' + delivery.getDeliveryStatus().getName()}"></li>
+                        <li class="list-group-item" th:text="${'Дата створення: ' + delivery.getCreationDate()}"></li>
+                        <li class="list-group-item">
+                            <div>
+                                <div class="card-body text-secondary" style="font-weight: bold;  text-transform: uppercase; text-align: center;">Товари</div>
+                                <th:block th:each="deliveryItem, iStats : ${delivery.getDeliveryItems()}" th:object="${deliveryItem}">
+                                    <div class="card-body">
+                                        <div th:text="'Книга: '+ ${deliveryItem.getBookTitle()}">author</div>
+                                        <div th:text="'Ціна: ' + ${deliveryItem.getPrice()}"></div>
+                                        <div th:text="'Кількість: ' + ${deliveryItem.getQuantity()}"></div>
+                                    </div>
+                                </th:block>
+                            <div>
+                        </li>
+                        <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER')}">
+                            <div class="card-footer text-muted">
+                                <a href="#" class="btn btn-outline-dark" style="display: flex; justify-content: center;">Змінити статус</a>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <footer th:replace="~{fragment::footer}"></footer>
+        </div>
+    </div>
 </body>
 </html>
