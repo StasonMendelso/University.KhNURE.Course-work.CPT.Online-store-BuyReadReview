@@ -1,4 +1,3 @@
-DROP TABLE client_note_for_wishes;
 DROP TABLE book_review_edited;
 DROP TABLE receiver_contact;
 DROP TABLE card_payment;
@@ -6,8 +5,6 @@ DROP TABLE cash_payment;
 DROP TABLE edit_review_permission;
 DROP TABLE card_returned_funds_payment;
 DROP TABLE delivery_item;
-DROP TABLE book_review_request_for_publication_cancel;
-DROP TABLE deliveryman_contact;
 DROP TABLE delivery;
 DROP TABLE delivery_status;
 DROP TABLE delivery_request;
@@ -31,12 +28,10 @@ DROP TABLE payment_method;
 DROP TABLE book_genre;
 DROP TABLE genre;
 DROP TABLE book_review_final;
-DROP TABLE book_review_comment;
 DROP TABLE book_file;
 DROP TABLE `file`;
 DROP TABLE book_review_with_tag;
 DROP TABLE book_review_tag;
-DROP TABLE book_review_tag_category;
 DROP TABLE book_review;
 DROP TABLE book_review_request_for_publication;
 DROP TABLE book_review_request_for_publication_status;
@@ -51,7 +46,6 @@ DROP TABLE publisher;
 DROP TABLE cart;
 DROP TABLE courier_delivery;
 DROP TABLE nova_poshta_delivery;
-DROP TABLE nova_poshta_delivery_status;
 DROP TABLE shop_delivery;
 DROP TABLE shop_delivery_status;
 DROP TABLE delivery_info;
@@ -89,12 +83,12 @@ CREATE TABLE book
         CONSTRAINT  book_title CHECK (title != ""),
     `description`           MEDIUMTEXT NOT NULL
         CONSTRAINT  book_description CHECK (`description` != ""),
-    isbn                  VARCHAR(16) NOT NULL
+    isbn                  VARCHAR(18) NOT NULL
         CONSTRAINT  book_isbn CHECK (isbn != ""),
     hidden                boolean NOT NULL DEFAULT 0,
     price                 DECIMAL(30,8) NOT NULL DEFAULT 0
         CONSTRAINT  book_price CHECK (price >=0),
-    quantity              FLOAT NOT NULL DEFAULT 0
+    quantity              INTEGER NOT NULL DEFAULT 0
         CONSTRAINT  book_quantity CHECK (quantity >=0),
     article               VARCHAR(25) NOT NULL
         CONSTRAINT  book_article CHECK (article != ""),
@@ -173,17 +167,6 @@ CREATE INDEX XIE1review_characteristic_name ON book_review_characteristic
     (
      `name`
         );
-
-
-CREATE TABLE book_review_comment
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `comment`               VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_comment_comment CHECK (`comment` != ""),
-    book_review_id        BIGINT NOT NULL,
-    client_id             BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE book_review_draft
@@ -304,16 +287,6 @@ CREATE INDEX XIE3request_for_publication_admin ON book_review_request_for_public
         );
 
 
-CREATE TABLE book_review_request_for_publication_cancel
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    reason                VARCHAR(200) NOT NULL
-        CONSTRAINT  book_review_request_for_publication_cancel_reason CHECK (reason != ""),
-    book_review_request_for_publication_id  BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
-
-
 CREATE TABLE book_review_request_for_publication_characteristic
 (
     request_for_publication_id  BIGINT NOT NULL,
@@ -380,27 +353,11 @@ CREATE TABLE book_review_tag
     `name`                  VARCHAR(100) NOT NULL
         CONSTRAINT  book_review_tag_name CHECK (`name` != ""),
     description           VARCHAR(60) NULL,
-    book_review_tag_category_id  BIGINT NULL,
     PRIMARY KEY (id)
 );
 
 
 CREATE INDEX XIE1book_review_tag_name ON book_review_tag
-    (
-     `name`
-        );
-
-
-CREATE TABLE book_review_tag_category
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    `name`                  VARCHAR(60) NOT NULL
-        CONSTRAINT  book_review_tag_category_name CHECK (`name` != ""),
-    PRIMARY KEY (id)
-);
-
-
-CREATE INDEX XIE1book_review_tag_category_name ON book_review_tag_category
     (
      `name`
         );
@@ -459,7 +416,7 @@ CREATE TABLE cart
 CREATE TABLE cart_item
 (
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  cart_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  cart_item_quantity CHECK (quantity >0),
     cart_id               BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (cart_id,book_id)
@@ -508,15 +465,6 @@ CREATE TABLE `client`
 );
 
 
-CREATE TABLE client_note_for_wishes
-(
-    wish_description      MEDIUMTEXT NOT NULL,
-    manager_id            BIGINT NOT NULL,
-    id_request            BIGINT NOT NULL,
-    PRIMARY KEY (id_request)
-);
-
-
 CREATE TABLE courier_delivery
 (
     address               VARCHAR(100) NOT NULL,
@@ -525,12 +473,15 @@ CREATE TABLE courier_delivery
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE delivery
 (
-    description_for_status  MEDIUMTEXT NOT NULL,
+    id                    BIGINT NOT NULL AUTO_INCREMENT,
+    request_id                    BIGINT NOT NULL,
     courier_id            BIGINT NOT NULL,
-    id                    BIGINT NOT NULL ,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    courier_telephone_number      VARCHAR(25) NOT NULL
+        CONSTRAINT  delivery_courier_telephone_number CHECK (delivery.courier_telephone_number != ""),
+    description_for_status  MEDIUMTEXT NOT NULL,
     delivery_status_id    BIGINT NOT NULL,
     PRIMARY KEY (id)
 );
@@ -546,14 +497,14 @@ CREATE TABLE delivery_info
 
 CREATE TABLE delivery_item
 (
+    book_id               BIGINT NOT NULL,
+    delivery_id           BIGINT NOT NULL,
     price                 DECIMAL(30,8) NOT NULL
         CONSTRAINT  delivery_item_price CHECK (delivery_item.price >=0),
     quantity              FLOAT NOT NULL
-        CONSTRAINT  delivery_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  delivery_item_quantity CHECK (quantity >0),
     book_title            VARCHAR(250) NOT NULL
         CONSTRAINT  delivery_item_book_title CHECK (book_title  != ""),
-    book_id               BIGINT NOT NULL,
-    delivery_id           BIGINT NOT NULL,
     PRIMARY KEY (book_id,delivery_id)
 );
 
@@ -568,12 +519,14 @@ CREATE TABLE delivery_method
 
 CREATE TABLE delivery_request
 (
-    description_for_status  MEDIUMTEXT NOT NULL,
+    id                    BIGINT NOT NULL AUTO_INCREMENT,
     manager_id            BIGINT NOT NULL,
     courier_id            BIGINT NULL,
     order_id              BIGINT NOT NULL,
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
+    client_wish_description   MEDIUMTEXT NULL,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     delivery_request_status_id  BIGINT NOT NULL,
+    description_for_status  MEDIUMTEXT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -590,16 +543,6 @@ CREATE TABLE delivery_status
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
     courier_delivery_status  VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-
-CREATE TABLE deliveryman_contact
-(
-    telephone_number      VARCHAR(25) NOT NULL
-        CONSTRAINT  deliveryman_contact_telephone_number CHECK (deliveryman_contact.telephone_number != ""),
-    id                    BIGINT NOT NULL,
-
     PRIMARY KEY (id)
 );
 
@@ -631,7 +574,7 @@ CREATE UNIQUE INDEX unique_relative_path ON `file`
 CREATE TABLE genre
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
-    name                  VARCHAR(200) NOT NULL,
+    name                  VARCHAR(200) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
@@ -643,17 +586,10 @@ CREATE TABLE nova_poshta_delivery
     waybill               DECIMAL(30,8) NOT NULL DEFAULT 0,
     invoice_number 		  VARCHAR(40) NOT NULL UNIQUE,
     id                    BIGINT NOT NULL ,
-    nova_poshta_delivery_status  BIGINT NOT NULL,
     PRIMARY KEY (id)
 );
 
 
-CREATE TABLE nova_poshta_delivery_status
-(
-    id                    BIGINT NOT NULL AUTO_INCREMENT,
-    delivery_status       VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
-);
 
 
 CREATE TABLE `order`
@@ -676,7 +612,7 @@ CREATE TABLE order_item
     title                 VARCHAR(250) NOT NULL
         CONSTRAINT  order_item_title CHECK (title != ""),
     quantity              FLOAT NOT NULL DEFAULT 0
-        CONSTRAINT  order_item_quantity CHECK (quantity >=0),
+        CONSTRAINT  order_item_quantity CHECK (quantity >0),
     order_id              BIGINT NOT NULL,
     book_id               BIGINT NOT NULL,
     PRIMARY KEY (order_id,book_id)
@@ -722,7 +658,7 @@ CREATE TABLE payment_status
 CREATE TABLE publisher
 (
     id                    BIGINT NOT NULL AUTO_INCREMENT,
-    name                  VARCHAR(200) NOT NULL,
+    name                  VARCHAR(200) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
@@ -861,15 +797,6 @@ ALTER TABLE book_review
     ADD FOREIGN KEY R_327 (client_id) REFERENCES `client`(id);
 
 
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_329 (book_review_id) REFERENCES book_review(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE book_review_comment
-    ADD FOREIGN KEY R_330 (client_id) REFERENCES `client`(id)
-        ON DELETE CASCADE;
-
-
 ALTER TABLE book_review_draft
     ADD FOREIGN KEY R_201 (client_id) REFERENCES `client`(id)
         ON DELETE CASCADE;
@@ -919,11 +846,6 @@ ALTER TABLE book_review_request_for_publication
     ADD FOREIGN KEY R_208 (check_request_id) REFERENCES book_review_request_for_checking(id);
 
 
-ALTER TABLE book_review_request_for_publication_cancel
-    ADD FOREIGN KEY R_359 (book_review_request_for_publication_id) REFERENCES book_review_request_for_publication(id)
-        ON DELETE CASCADE;
-
-
 ALTER TABLE book_review_request_for_publication_characteristic
     ADD FOREIGN KEY Request_for_publication_cancontain_many_charachteristics (request_for_publication_id) REFERENCES book_review_request_for_publication(id)
         ON DELETE CASCADE;
@@ -938,10 +860,6 @@ ALTER TABLE book_review_request_for_publication_criterion_score
 
 ALTER TABLE book_review_request_for_publication_criterion_score
     ADD FOREIGN KEY Criteria_can_evaluate_manyrequests_for_publication (review_score_criterion_id) REFERENCES book_review_score_criterion(id);
-
-
-ALTER TABLE book_review_tag
-    ADD FOREIGN KEY R_331 (book_review_tag_category_id) REFERENCES book_review_tag_category(id);
 
 
 ALTER TABLE book_review_with_tag
@@ -999,21 +917,13 @@ ALTER TABLE `client`
     ADD FOREIGN KEY (id) REFERENCES `user`(id);
 
 
-ALTER TABLE client_note_for_wishes
-    ADD FOREIGN KEY R_171 (id_request) REFERENCES delivery_request(id)
-        ON DELETE CASCADE;
-
-ALTER TABLE client_note_for_wishes
-    ADD FOREIGN KEY R_265 (manager_id) REFERENCES `user`(id);
-
-
 ALTER TABLE courier_delivery
     ADD FOREIGN KEY (id) REFERENCES delivery_info(id)
         ON DELETE CASCADE;
 
 
 ALTER TABLE delivery
-    ADD FOREIGN KEY R_259 (id) REFERENCES delivery_request(id)
+    ADD FOREIGN KEY R_259 (request_id) REFERENCES delivery_request(id)
         ON DELETE CASCADE;
 
 ALTER TABLE delivery
@@ -1053,11 +963,6 @@ ALTER TABLE delivery_request
     ADD FOREIGN KEY R_269 (courier_id) REFERENCES `user`(id);
 
 
-ALTER TABLE deliveryman_contact
-    ADD FOREIGN KEY R_270 (id) REFERENCES delivery(id)
-        ON DELETE CASCADE;
-
-
 ALTER TABLE edit_review_permission
     ADD FOREIGN KEY R_356 (review_draft_id) REFERENCES book_review_draft(id)
         ON DELETE CASCADE;
@@ -1066,10 +971,6 @@ ALTER TABLE edit_review_permission
 ALTER TABLE nova_poshta_delivery
     ADD FOREIGN KEY (id) REFERENCES delivery_info(id)
         ON DELETE CASCADE;
-
-ALTER TABLE nova_poshta_delivery
-    ADD FOREIGN KEY R_275 (nova_poshta_delivery_status) REFERENCES nova_poshta_delivery_status(id);
-
 
 ALTER TABLE `order`
     ADD FOREIGN KEY R_75 (client_id) REFERENCES `client`(id);
@@ -1126,4 +1027,3 @@ ALTER TABLE shop_delivery
 
 ALTER TABLE `user`
     ADD FOREIGN KEY R_178 (role_id) REFERENCES role(id);
-

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/checkout/deliveryMethods.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div>
+            Вибачте, але магазин не має достатньої кількості книг з назвою
+            <span th:text="${book.getTitle()}"></span>
+        </div>
+        <div>
+            Спробуйте змінити кількість книги у корзині.
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
+

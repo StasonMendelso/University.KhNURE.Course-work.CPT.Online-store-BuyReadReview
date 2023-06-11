@@ -1,12 +1,338 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="ua">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ua">
 <head th:fragment="main-head-data">
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BuyReadReview Online Store</title>
-  <link th:href="@{/assets/image/icons/logo.jpg}" rel="icon"/>
-  <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
-  <link th:href="@{/css/app.css}" rel="stylesheet" media="all" type="text/css"/>
-  <script th:src="@{/jQuery/jquery.min.js}"></script>
-  <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!--    <meta th:name="_csrf" th:content="${_csrf.token}"/>-->
+    <!--    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <meta name="context-path" th:content="${#ctx.getVariable('context-path')}">
+    <title>BuyReadReview Online Store</title>
+    <link th:href="@{/assets/image/icons/logo.jpg}" rel="icon"/>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+    <link th:href="@{/assets/css/app.css}" rel="stylesheet" media="all" type="text/css"/>
+    <script th:src="@{/jQuery/jquery-3.7.0.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </head>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-light"
+     th:switch="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()}">
+
+    <th:block th:case="CLIENT">
+        <div th:replace="~{fragment::navbar_CLIENT}">CLIENT navbar</div>
+    </th:block>
+    <th:block th:case="ADMIN">
+        <div th:replace="~{fragment::navbar_ADMIN}">ADMIN navbar</div>
+    </th:block>
+    <th:block th:case="MANAGER">
+        <div th:replace="~{fragment::navbar_MANAGER}">MANAGER navbar</div>
+    </th:block>
+    <th:block th:case="COURIER">
+        <div th:replace="~{fragment::navbar_COURIER}">ADMIN navbar</div>
+    </th:block>
+    <th:block th:case="*">
+        <div th:replace="~{fragment::navbar_GUEST}">GUEST navbar</div>
+    </th:block>
+
+</nav>
+<div class="container" th:fragment="navbar_GUEST">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: GUEST</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+        </ul>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+                <div th:replace="~{fragment::navbar-cart-element}">
+                    Cart
+                </div>
+            </li>
+            <li th:replace="~{fragment::navbar-unauthenticated}"></li>
+        </ul>
+    </div>
+</div>
+<div class="container" th:fragment="navbar_CLIENT">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: CLIENT</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/cabinet/orders}">Замовлення</a>
+            </li>
+        </ul>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+                <div th:replace="~{fragment::navbar-cart-element}">
+                    Cart
+                </div>
+            </li>
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
+        </ul>
+    </div>
+</div>
+<div class="container" th:fragment="navbar_ADMIN">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: ADMIN</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books/new}">Додати книгу</a>
+            </li>
+        </ul>
+<!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
+        </ul>
+    </div>
+</div>
+<div class="container" th:fragment="navbar_MANAGER">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: MANAGER</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orders}">Замовлення</a>
+            </li>
+        </ul>
+        <!--        <form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li th:replace="~{fragment::navbar-authenticated}"></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container" th:fragment="navbar_COURIER">
+    <a class="navbar-brand d-flex flex-row align-items-center" th:href="@{/books}">
+        <div class="logo-container">
+            <img th:src="@{/assets/image/icons/logo.jpg}" alt="Logo">
+        </div>
+        <div class="ms-1 text-wrap">Buy Read Review</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <span class="navbar-text" aria-current="page">Role: COURIER</span>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/books}">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/deliveries}">Доставки</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/deliveryRequests}">Заявки на доставку</a>
+            </li>
+        </ul>
+        <!--<form th:replace="~{fragment::navbar-search-form}">Search-form</form>-->
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Вийти</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!--<form th:fragment="navbar-search-form" class="d-flex me-auto align-self-center" role="search">-->
+<!--    <input class="form-control me-2" type="search" placeholder="Знайти книгу за назвою" aria-label="Search">-->
+<!--    <button class="btn btn-outline-success" type="submit">Пошук</button>-->
+<!--</form>-->
+<div th:fragment="navbar-cart-element" class="d-flex flex-row">
+    <a class="nav-link" th:href="@{/cart}">Корзина</a>
+    <div class="d-flex flex-column">
+        <div class="d-flex flex-row justify-content-start align-items-center">
+            <span>Кількість товарів:</span>
+            <span th:text="${session.get('cart').getCartItemsNumber()}" id="cartItemsCount">items count</span>
+        </div>
+
+        <div class="d-flex flex-row justify-content-start">
+            <span>Сума:</span>
+            <span id="cartTotal">
+                <th:block th:if="${session.get('cart').getTotal()==0}" th:text="${'0 грн'}"></th:block>
+                <th:block th:if="${session.get('cart').getTotal()>0}"
+                          th:text="${#numbers.formatDecimal(session.get('cart').getTotal(),0,2) + ' грн'}"></th:block>
+            </span>
+        </div>
+    </div>
+</div>
+<th:block th:fragment="navbar-authenticated" class="navbar-nav mb-2 mb-lg-0">
+    <li class="nav-item">
+        <span th:text="${#authentication.principal.user.getLastName() + ' ' +
+        #authentication.principal.user.getFirstName() + ' ' +
+        #authentication.principal.user.getMiddleName()}"></span>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/logout}">Вийти</a>
+    </li>
+</th:block>
+
+<th:block th:fragment="navbar-unauthenticated">
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/login}">Увійти</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" th:href="@{/register}">Зареєструватися</a>
+    </li>
+</th:block>
+<div th:fragment="bookRow(bookList)"
+     th:each="book : ${bookList}" class="card book-card " style="width: 18rem;"
+     th:if="${((#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )
+                                 && !book.getHidden()) ||
+                                 #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN' ||
+                                      #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'
+                                      ||#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER'}">
+    <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN'}">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}" alt="...">
+        <div class="card-body mt-auto" th:classappend="${book.getHidden()? 'opacity-75' : ''}">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
+            <p class="card-text" th:text="${book.getPrice()}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
+            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
+            <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
+        </div>
+    </div>
+    <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                   #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'} ">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" th:classappend="${book.getHidden()? 'opacity-50' : ''}" alt="...">
+        <div class="card-body mt-auto" th:classappend="${book.getHidden()? 'opacity-75' : ''}">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
+            <p class="card-text" th:text="${#numbers.formatDecimal(book.getPrice(),0,2) + ' грн'}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
+            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
+        </div>
+    </div>
+    <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )
+                                 && !book.getHidden()}">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" alt="...">
+        <div class="card-body mt-auto">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
+            <p class="card-text" th:text="${#numbers.formatDecimal(book.getPrice(),0,2) + ' грн'}"></p>
+            <p class="card-text" th:text="${'Залишилося: ' + book.getQuantity()}"></p>
+            <input hidden="hidden" name="bookId" th:value="${book.getId()}">
+            <button class="btn btn-primary _addItemToCartButton">Додати в корзину</button>
+        </div>
+    </div>
+    <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}"
+             class="card-img-top" alt="...">
+        <div class="card-body mt-auto">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}">Card
+                title</a>
+            <p class="card-text" th:text="${book.getPrice()}"></p>
+            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
+        </div>
+    </div>
+    <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER'}">
+        <img th:src="@{/file/book/{file_id}(file_id=${book.getFiles().stream().findFirst().get().getId()})}" class="card-img-top" alt="...">
+        <div class="card-body mt-auto">
+            <a class="card-title h5" th:text="${book.getTitle()}" th:href="@{/books/{id}(id=${book.getId})}" >Card title</a>
+            <p class="card-text" th:text="${book.getPrice()}"></p>
+            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Переглянути</a>
+        </div>
+    </div>
+</div>
+<div th:fragment="contact-data(contact)">
+    <div>
+        <span>Прізвище:</span>
+        <span th:text="${contact.lastName}"></span>
+    </div>
+    <div>
+        <span>Ім'я:</span>
+        <span th:text="${contact.firstName}"></span>
+    </div>
+    <div>
+        <span>По-батькові:</span>
+        <span th:text="${contact.middleName}"></span>
+    </div>
+    <div>
+        <span>Телефон:</span>
+        <span th:text="${contact.telephoneNumber}"></span>
+    </div>
+    <div>
+        <span>Електронна почта:</span>
+        <span th:text="${contact.email}"></span>
+    </div>
+</div>
+
+
+<div th:fragment="deliveryRow(deliveryList)"
+        th:each="delivery : ${deliveryList}" class="card w-100"
+     th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                    #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
+
+    <h5 class="card-header" style="font-weight: bold; text-transform: uppercase; text-align: center;" th:text="'Доставка номер ' + ${delivery.getId()}">Delivery id</h5>
+    <div class="card-body">
+        <h5 class="card-title" th:text="'Cтатус: ' + ${delivery.getDeliveryStatus().getName()}">Request id</h5>
+        <a th:href="@{/deliveries/{id}(id=${delivery.id})}" class="btn btn-primary"
+           th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                    #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">Переглянути деталі</a>
+    </div>
+</div>
+
+<div th:fragment="deliveryRequestRow(deliveryRequestList)"
+     th:each="deliveryRequest : ${deliveryRequestList}" class="card w-100"
+     th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='MANAGER' ||
+                    #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='COURIER'}">
+</div>
+
+<footer th:fragment="footer">
+    <div class="container">
+        <div>Footer</div>
+    </div>
+</footer>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/book/sendAddBookForm.js}"></script>
+    <script th:src="@{/assets/js/book/manageAddForm.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="book mb-3 mt-3">
+            <div class="h3">Редагування книги</div>
+            <div th:text="${bookTitle}" class="h3"></div>
+            <div class="d-flex flex-row justify-content-center">
+                <img th:src="@{/file/book/{file_id}(file_id=${firstBookFileId})}" alt="Book photo">
+            </div>
+            <form th:action="@{/books}" th:method="PATCH" th:object="${editBookDto}" id="addForm"
+                  enctype="multipart/form-data">
+                <input hidden th:field="*{id}">
+                <div class="mb-2">
+                    <label for="ISBN" class="form-label">ISBN</label>
+                    <input type="text" class="form-control" id="ISBN" placeholder="123-123-12-1234-1"
+                           th:field="*{isbn}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('isbn') : false}"
+                       th:text="${errors.getFieldError('isbn').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Title" class="form-label">Назва книги</label>
+                    <input type="text" class="form-control" id="Title" th:field="*{title}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('title') : false}"
+                       th:text="${errors.getFieldError('title').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Papers" class="form-label">Кількість сторінок</label>
+                    <input type="number" class="form-control" id="Papers" th:field="*{paperQuantity}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('paperQuantity') : false}"
+                       th:text="${errors.getFieldError('paperQuantity').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Description" class="form-label">Опис книги</label>
+                    <textarea class="form-control" id="Description" th:field="*{description}"></textarea>
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('description') : false}"
+                       th:text="${errors.getFieldError('description').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Price" class="form-label">Ціна</label>
+                    <input type="text" class="form-control" id="Price" th:field="*{price}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('price') : false}"
+                       th:text="${errors.getFieldError('price').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Quantity" class="form-label">Кількість</label>
+                    <input type="number" class="form-control" id="Quantity" th:field="*{quantity}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('quantity') : false}"
+                       th:text="${errors.getFieldError('quantity').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Article" class="form-label">Артикуль товару</label>
+                    <input type="text" class="form-control" id="Article" th:field="*{article}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('article') : false}"
+                       th:text="${errors.getFieldError('article').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Publisher" class="form-label">Видавництво</label>
+                    <select class="form-control form-select" id="Publisher" th:field="*{publisherName}">
+                        <option type="text" th:each="publisher : ${publisherList}" th:value="${publisher.name}"
+                                th:text="${publisher.name}"
+                                th:selected="${publisher.equals(editBookDto.publisherName)}"></option>
+                    </select>
+                    <label for="publisherNewName" class="form-label">Або додайте нове видавництво</label>
+                    <input type="text" class="form-control" id="publisherNewName" th:name="publisherName"
+                           th:value="${publisherNameList.contains(editBookDto.publisherName) ? '' : editBookDto.publisherName}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('publisherName') : false}"
+                       th:text="${errors.getFieldError('publisherName').defaultMessage}">Error message</p>
+                </div>
+                <div>
+                    <div>Виберіть автора(-ів) книги:</div>
+                    <div class="overflow-auto author-scroll-container border rounded rounded-1 border-dark border-1 p-1">
+                        <div class="form-check" th:each="author : ${authorList}">
+                            <input class="form-check-input" type="checkbox" th:name="authorNames"
+                                   th:value="${author.getLastName() +' ' + author.getFirstName()}" id="flexCheckDefault"
+                                   th:checked="${editBookDto.authorNames.contains(author.getLastName() +' ' + author.getFirstName())}">
+                            <label class="form-check-label" for="flexCheckDefault"
+                                   th:text="${author.getLastName() +' ' + author.getFirstName()}">author name</label>
+                        </div>
+                    </div>
+                    <div class="mt-1 mb-1">
+                        <button class="btn btn-primary w-100" type="button" id="addAuthorInputButton">Додати нового автора
+                        </button>
+                        <div th:each="inputtedAuthor : ${newInputtedAuthors}">
+                            <div class="d-flex d-row mt-1">
+                                <input class="form-control me-1" type="text" name="authorNames" th:value="${inputtedAuthor}">
+                                <button class="btn btn-danger removeAuthorInputButton " type="button"
+                                        id="removeAuthorInputButton">Видалити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('authorNames') : false}"
+                       th:text="${errors.getFieldError('authorNames').defaultMessage}">Error message</p>
+                </div>
+                <div>
+                    <div>Виберіть жанр(-и) книги:</div>
+                    <div class="overflow-auto genre-scroll-container border rounded rounded-1 border-dark border-1 p-1">
+                        <div class="form-check" th:each="genre : ${genreList}">
+                            <input class="form-check-input " type="checkbox" th:name="genreNames"
+                                   th:value="${genre.getName()}" id="flexCheckDefault"
+                                   th:checked="${editBookDto.genreNames.contains(genre.getName())}">
+                            <label class="form-check-label" for="flexCheckDefault" th:text="${genre.name}">genre
+                                name</label>
+                        </div>
+                    </div>
+                    <div class="mt-1 mb-1">
+                        <button class="btn btn-primary w-100" type="button" id="addGenreInputButton">Додати новий жанр
+                        </button>
+                        <div th:each="inputtedGenre : ${newInputtedGenres}">
+                            <div class="d-flex d-row mt-1">
+                                <input class="form-control me-1" type="text" name="genreNames" th:value="${inputtedGenre}">
+                                <button class="btn btn-danger removeGenreInputButton" type="button"
+                                        id="removeGenreInputButton">Видалити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('genreNames') : false}"
+                       th:text="${errors.getFieldError('genreNames').defaultMessage}">Error message</p>
+                </div>
+
+                <div class="mb-1 mt-4 form-check">
+                    <input type="checkbox" class="form-check-input" id="hidden" th:field="*{hidden}">
+                    <label class="form-check-label" for="hidden">Приховати книгу в каталозі</label>
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('hidden') : false}"
+                       th:text="${errors.getFieldError('hidden').defaultMessage}">Error message</p>
+                </div>
+                <button type="submit" id="submit" class="btn btn-success w-100">Зберегти зміни</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>

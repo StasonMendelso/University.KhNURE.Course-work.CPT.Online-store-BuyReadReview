@@ -136,8 +136,8 @@ package app to the jar file and deploy the file on the server manually.
 * **Stanislav Hlova** - *All
   work* - [StasonMendelso](https://github.com/StasonMendelso) [![wakatime](https://wakatime.com/badge/user/b33e0124-90c1-44a9-95a8-0f09b324ad70/project/413c52eb-eef3-4d59-ad1f-9516bdffbf60.svg)](https://wakatime.com/badge/user/b33e0124-90c1-44a9-95a8-0f09b324ad70/project/413c52eb-eef3-4d59-ad1f-9516bdffbf60)
 * **Anna Kharchenko** - *All work* - [Enk33](https://github.com/Enk33)
-* **Anna Nikolaichuk** - *All work* - [](https://github.com/)
-* **Anastasia Starukhina** - *All work* - [](https://github.com/)
+* **Anna Nikolaichuk** - *All work* - [a-nikol](https://github.com/a-nikol)
+* **Anastasia Starukhina** - *All work* - [Limeeww](https://github.com/Limeeww)
 
 [1]:https://nure.ua/
 
@@ -148,5 +148,3 @@ package app to the jar file and deploy the file on the server manually.
 [6]:https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address
 
 [7]:https://docs.github.com/en/authentication/connecting-to-github-with-ssh
-
-[8]:https://stasonmendelso.github.io/University.KhNURE.Web-T.Practice-Final-project.French-bulldog-landing-page/

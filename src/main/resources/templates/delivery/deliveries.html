@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+</head>
+<body>
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <div class="header">
+            <nav th:replace="~{fragment::navbar}"></nav>
+        </div>
+        <div class="content container">
+            <div class="d-flex flex-row justify-content-center">
+                <div class="d-flex flex-row flex-wrap justify-content-center">
+                    <div th:replace="~{fragment::deliveryRow(${deliveryList})}" th:if="${!deliveryList.isEmpty()}"></div>
+                    <div th:if="${deliveryList.isEmpty()}" class="h3"> Наразі доставок немає</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer">
+            <footer th:replace="~{fragment::footer}"></footer>
+        </div>
+    </div>
+</body>
+</html>

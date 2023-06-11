@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/order/updateOrderStatus.js}"></script>
+    <script th:src="@{/assets/js/order/updateOrderStatusDescription.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div th:if="${orderList.isEmpty()}">
+            Ваш список замовлень пустий
+        </div>
+        <div class="order" th:if="${!orderList.isEmpty()}">
+            <div class="order-items">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td class="text-start text-uppercase fw-bold fs-5">Замовлення #</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Дата створення</td>
+                            <td class="text-start text-uppercase fw-bold fs-5">Сума до сплати</td>
+                            <td class="text-center text-uppercase fw-bold fs-5">Статус</td>
+                            <td class="text-end text-uppercase fw-bold fs-5">Дії</td>
+                        </tr>
+                        </thead>
+                        <tbody class="cart-tbody">
+                        <th:block th:each="order : ${orderList}">
+                            <tr class="align-middle cart-item-row">
+                                <td class="text-start" th:text="${order.getId()}">
+
+                                </td>
+                                <td class="text-start">
+                                    <a th:text="${order.getCreateAt()}"
+                                       class="text-decoration-none">Дата створення</a>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(order.getPaymentInfo().getTotalToPay(),0,2)} + ' грн'"
+                                    class="text-start">Сума
+                                </td>
+                                <td th:text="${order.getOrderStatus()}" class="text-start">статус</td>
+                                <td class="text-center">
+                                    <a th:href="@{/cabinet/orders/{id}(id=${order.id})}" class="bnt btn-success text-decoration-none">Перейти</a>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
+

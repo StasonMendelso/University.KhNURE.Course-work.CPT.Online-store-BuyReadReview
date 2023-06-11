@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/cart/addItemToCart.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+
+    <div class="content container">
+        <div class="book" th:if="${!book.getHidden() || (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
+            <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN') && book.getHidden()}" class="text-danger fs-3">
+                Книга наразі прихована в каталозі
+            </div>
+            <div class="h3" th:text="${book.getTitle()}"></div>
+            <div class="book-image-container">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true" th:if="${book.getFiles().size()>1}">
+                    <div class="carousel-indicators">
+                        <button th:each="file, iStats : ${book.getFiles()}" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${iStats.index}" th:classappend="${iStats.first ? 'active':''}"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item" th:each="file, iStats : ${book.getFiles()}" th:classappend="${iStats.first ? 'active':''}">
+                            <img th:src="@{/file/book/{file_id}(file_id=${file.getId()})}" alt="Book photo">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <img th:if="${book.getFiles().size()<=1}" th:src="@{/file/book/{file_id}(file_id=${(book.getFiles).stream().findFirst().get().getId()})}" alt="Book photo">
+            </div>
+            <div>
+                ISBN: <span th:text="${book.getIsbn()}">isbn</span>
+            </div>
+            <div>
+                Назва: <span th:text="${book.getTitle()}">title</span>
+            </div>
+            <div>
+                Кількість сторінок: <span th:text="${book.getPaperQuantity()}">paperQuantity</span>
+            </div>
+            <div>
+                Опис: <div th:text="${book.getDescription()}">description</div>
+            </div>
+            <div>
+                Ціна: <span th:text="${book.getPrice() + ' грн'}">price</span>
+            </div>
+            <div>
+                Кількість: <span th:text="${book.getQuantity()}">quantity</span>
+            </div>
+            <div>
+                Артикул: <span th:text="${book.getArticle()}">article</span>
+            </div>
+            <div>
+                Видавництво: <span th:text="${book.getPublisher().getName()}">publisher name</span>
+            </div>
+            <div>
+                Автор(-и):
+                <span th:each="author, iStats : ${book.getAuthors()}" th:object="${author}" th:text="${iStats.last ? author.getFirstName() + ' ' + author.getLastName() :author.getFirstName() + ' ' + author.getLastName() + ', '}">author</span>
+            </div>
+            <div>
+                Жанр(-и):
+                <span th:each="genre, iStats: ${book.getGenres()}" th:object="${genre}" th:text="${iStats.last ? genre.getName() : genre.getName() + ', '}">genre</span>
+            </div>
+            <div th:if="${(#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='ADMIN')}">
+                <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-warning">Редагувати</a>
+            </div>
+            <div th:if="${#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' }">
+                <input hidden="hidden" name="bookId" th:value="${book.getId()}">
+                <button class="btn btn-primary _addItemToCartButton">Додати в корзину</button>
+            </div>
+        </div>
+        <div th:if="${book.getHidden() && (#authentication.principal.authorities.stream().findFirst().get().getAuthority()=='GUEST' ||
+                            #authentication.principal.authorities.stream().findFirst().get().getAuthority()=='CLIENT' )}">Книги не знайдено</div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>

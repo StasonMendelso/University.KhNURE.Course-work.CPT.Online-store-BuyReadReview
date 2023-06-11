@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ua" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta th:replace="~{fragment::main-head-data}">
+    <script th:src="@{/assets/js/bookreview/manageAddBookReviewForm.js}"></script>
+</head>
+<body>
+<div class="wrapper d-flex flex-column min-vh-100">
+    <div class="header">
+        <nav th:replace="~{fragment::navbar}"></nav>
+    </div>
+    <div class="content container">
+        <div class="book mb-3 mt-3">
+            <div class="h3">Створення нової рецензії</div>
+            <form th:action="@{/bookReviews}" th:method="POST" th:object="${createBookReviewDto}" id="addForm"
+                  enctype="multipart/form-data">
+                <div class="mb-2">
+                    <label for="Book" class="form-label">Назва книги</label>
+                    <select class="form-control form-select" id="Book" th:field="*{bookTitle}">
+                        <option type="text" th:each="publisher : ${bookList}" th:value="${book.title}"
+                                th:text="${book.title}"
+                                th:selected="${book.equals(createBookReviewDto.bookTitle)}"></option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="RequestForPublicationId" class="form-label">Ідентифікатор заявки на публікацію</label>
+                    <input type="number" class="form-control" id="RequestForPublicationId" th:field="*{requestForPublicationId}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('requestForPublicationId') : false}"
+                       th:text="${errors.getFieldError('requestForPublicationId').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="СlientId" class="form-label">Ідентифікатор автора рецензії</label>
+                    <input type="text" class="form-control" id="СlientId" th:field="*{clientId}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('clientId') : false}"
+                       th:text="${errors.getFieldError('clientId').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="СlientPseudonym" class="form-label">Псевдонім автора рецензії</label>
+                    <input type="text" class="form-control" id="СlientPseudonym" th:field="*{clientPseudonym}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('clientPseudonym') : false}"
+                       th:text="${errors.getFieldError('clientPseudonym').defaultMessage}">Error message</p>
+                </div>
+                <div class="mb-2">
+                    <label for="Content" class="form-label">Рецензія</label>
+                    <input type="text" class="form-control" id="Content" th:field="*{content}">
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('content') : false}"
+                       th:text="${errors.getFieldError('content').defaultMessage}">Error message</p>
+                </div>
+                <div>
+                    <div>Виберіть тег(-и) для опису рецензії:</div>
+                    <div class="overflow-auto genre-scroll-container border rounded rounded-1 border-dark border-1 p-1">
+                        <div class="form-check" th:each="tag : ${tagList}">
+                            <input class="form-check-input " type="checkbox" th:name="tagNames"
+                                   th:value="${tag.getName()}" id="flexCheckDefault"
+                                   th:checked="${createBookReviewDto.tagNames.contains(tag.getName())}">
+                            <label class="form-check-label" for="flexCheckDefault" th:text="${tag.name}">tag
+                                name</label>
+                        </div>
+                    </div>
+                    <div class="mt-1 mb-1">
+                        <button class="btn btn-primary w-100" type="button" id="addTagInputButton">Додати новий тег
+                        </button>
+                        <div th:each="inputtedTag : ${newInputtedTags}">
+                            <div class="d-flex d-row mt-1">
+                                <input class="form-control me-1" type="text" name="genreNames" th:value="${inputtedTag}">
+                                <button class="btn btn-danger removeGenreInputButton" type="button"
+                                        id="removeTagInputButton">Видалити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="error" th:if="${errors!=null ? errors.getFieldError('tagNames') : false}"
+                       th:text="${errors.getFieldError('tagNames').defaultMessage}">Error message</p>
+                </div>
+                <button type="submit" id="submit" class="btn btn-success w-100">Опублікувати рецензію</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        <footer th:replace="~{fragment::footer}"></footer>
+    </div>
+</div>
+</body>
+</html>
